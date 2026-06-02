@@ -1,0 +1,5 @@
+.spyproject/
+.spyderproject/
+pycache/
+*.pyc
+.ipynb_checkpoints/
