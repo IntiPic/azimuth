@@ -1,0 +1,1 @@
+# src/estimator.pyclass AzimuthEstimator:    def __init__(self, latitude, longitude, tilt):        self.latitude = latitude        self.longitude = longitude        self.tilt = tilt    def estimate(self, df):        print("Estimando azimut...")        # Acá irá tu algoritmo        return None

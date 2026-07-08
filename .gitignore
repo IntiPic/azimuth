@@ -1,5 +1,16 @@
-.spyproject/
-.spyderproject/
-pycache/
+# Mac
+.DS_Store
+
+# Datos
+data/
+DATOS/
+
+# Resultados
+outputs/
+
+# Python
+__pycache__/
 *.pyc
-.ipynb_checkpoints/
+
+# Spyder
+.spyproject/
