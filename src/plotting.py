@@ -1,5 +1,5 @@
 from pathlib import Path
-
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
@@ -43,3 +43,45 @@ def save_daily_clearsky_plot(df, ghi_csk, msk_clearsky, output_dir="outputs/dail
     fig.savefig(output_dir / f"{date_str}.png", dpi=200, bbox_inches="tight")
 
     plt.close(fig)
+    
+    
+    
+def plot_omega_fit(fit_result, date=None, output_dir="outputs/gti_fit_plots"):
+    
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    omega = fit_result['omega']
+    gti = fit_result['gti']
+
+    a, b, c = fit_result['coef']
+    omega_star = fit_result['omega_star']
+    gti_star = fit_result['gti_star']
+
+    omega_fit = np.linspace(omega.min(),omega.max(),200)
+    gti_fit = np.polyval([a, b, c], omega_fit)
+
+    fig, ax = plt.subplots(figsize=(8,5))
+    ax.scatter(omega,gti,label='GTI')
+    ax.plot(omega_fit,gti_fit,label='Quadratic fit')
+    ax.plot(omega_star,gti_star,'ro',label=r'$\omega^\ast$')
+
+    title = (
+        f'{date}\n'
+        f'a={a:.3f}, '
+        f'b={b:.3f}, '
+        f'c={c:.3f}\n'
+        f'ω*={omega_star:.3f}°'
+    )
+
+    ax.set_title(title)
+
+    ax.set_xlabel('Hour angle (deg)')
+    ax.set_ylabel('GTI (W/m²)')
+
+    ax.grid(True)
+    ax.legend()
+    
+    fig.savefig(output_dir / f"{date}.png", dpi=200, bbox_inches="tight")
+
+    return fig, ax
