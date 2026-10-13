@@ -55,19 +55,37 @@ def plot_omega_fit(fit_result, date=None, output_dir="outputs/gti_fit_plots"):
     gti = fit_result['gti']
 
     a, b, c = fit_result['coef']
+    discard = fit_result['discard']
+    discard_passes = fit_result['discard_passes']
+    max_discard_passes = fit_result['max_discard_passes']
+    stop_label = {
+        'disabled': 'Descarte desactivado',
+        'no_new_outliers': 'Sin nuevos puntos fuera de 2σ',
+        'max_passes_reached': 'Límite alcanzado; residuos finales sin reevaluar',
+    }[fit_result['discard_stop_reason']]
+    discarded_pct = fit_result['discarded_pct']
     omega_star = fit_result['omega_star']
     gti_star = fit_result['gti_star']
 
     omega_fit = np.linspace(omega.min(),omega.max(),200)
     gti_fit = np.polyval([a, b, c], omega_fit)
+    fit_mode = 'Descarte por 2σ activado' if discard else 'Sin descarte'
 
     fig, ax = plt.subplots(figsize=(8,5))
-    ax.scatter(omega,gti,label='GTI')
-    ax.plot(omega_fit,gti_fit,label='Quadratic fit')
+    ax.scatter(omega,gti,label='GTI usada en el ajuste')
+    if discard and fit_result['n_discarded']:
+        ax.scatter(
+            fit_result['omega_discarded'], fit_result['gti_discarded'],
+            marker='x', color='tab:orange', label='GTI descartada por 2σ (acumulada)'
+        )
+    ax.plot(omega_fit,gti_fit,label='Ajuste cuadrático de GTI')
     ax.plot(omega_star,gti_star,'ro',label=r'$\omega^\ast$')
 
     title = (
         f'{date}\n'
+        f'{fit_mode} | pasadas: {discard_passes}/{max_discard_passes}\n'
+        f'Descartado acumulado: {discarded_pct:.2f}%\n'
+        f'{stop_label}\n'
         f'a={a:.3f}, '
         f'b={b:.3f}, '
         f'c={c:.3f}\n'

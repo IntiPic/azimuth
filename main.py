@@ -15,6 +15,8 @@ def main():
     tilt = 35
     tz_est= "America/Montevideo"
     window_minutes =120
+    discard = True  # False: sin descarte; True: descarte por 2σ
+    max_discard_passes = 3
     
     diagnostics = []
     results = []
@@ -44,7 +46,10 @@ def main():
         
         save_daily_clearsky_plot(df, ghi_csk, msk_clearsky)
         
-        fit_result = cs.estimate_omega_star(df, window_minutes, longitude)
+        fit_result = cs.estimate_omega_star(
+            df, window_minutes, longitude, discard=discard,
+            max_discard_passes=max_discard_passes
+        )
         plot_omega_fit(fit_result, date=df.index[0].date())
         
         omega_star=fit_result["omega_star"]
@@ -67,6 +72,9 @@ def main():
             "doy": doy,
             "omega_star": omega_star,
             "azimuth": azimuth,
+            "discarded_pct": fit_result["discarded_pct"],
+            "discard_passes": fit_result["discard_passes"],
+            "discard_stop_reason": fit_result["discard_stop_reason"],
         })
     
     df_results = pd.DataFrame(results)
@@ -80,5 +88,3 @@ if __name__ == "__main__":
 
     print("\nResultados:")
     print(df_results)
-    
-    

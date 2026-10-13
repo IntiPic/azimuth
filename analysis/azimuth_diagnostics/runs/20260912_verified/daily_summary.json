@@ -1,0 +1,203 @@
+[
+  {
+    "date": "2026-07-01",
+    "input_rows": 1440,
+    "all_copy_identical": true,
+    "max_time": "2026-07-01 12:25:00-03:00",
+    "max_gti": 866.19728,
+    "vertex_time": "2026-07-01 12:26:37.505108775-03:00",
+    "raw_peak_to_vertex_min": 1.6250851333333334,
+    "median15_peak": "2026-07-01 12:20:00-03:00",
+    "duplicates": 0,
+    "cadence_min": 1.0,
+    "cadence_max": 1.0,
+    "nonfinite_total": 0,
+    "initial_sigma": 3.4980507964411927,
+    "final_sigma": 0.7729388367087945,
+    "clear_in_window": 120,
+    "clear_used": 70,
+    "clear_rejected": 50,
+    "symmetry_gti_mae_60min": 5.213558574883132,
+    "gti_ghi_detrended_correlation": 0.9177312204265324,
+    "residual_sides": [
+      {
+        "side": "left",
+        "mean_residual": 0.05910433930037161,
+        "n": 47
+      },
+      {
+        "side": "right",
+        "mean_residual": -0.12077843248314564,
+        "n": 23
+      }
+    ],
+    "production_exact_match": true,
+    "eot_spencer_min": -3.477844452076152,
+    "spa_minus_spencer_window_min_deg": -0.11176153288079504,
+    "spa_minus_spencer_window_max_deg": -0.10782377711848667,
+    "baseline": {
+      "scenario": "baseline",
+      "center": "2026-07-01 12:25:00-03:00",
+      "window_minutes": 120,
+      "threshold": 2.0,
+      "mode": "iterative",
+      "degree": 2,
+      "n_window": 120,
+      "n_eligible": 120,
+      "n_used": 70,
+      "n_rejected": 50,
+      "omega_star": -5.379991826454672,
+      "left_count": 47,
+      "right_count": 23,
+      "left_extent_deg": 15.156271286564364,
+      "right_extent_deg": 14.593728713435608,
+      "vertex_inside": true,
+      "curvature_at_vertex": -0.3250401118150461,
+      "rmse_used": 0.7673979850786995,
+      "stale_coefficients": false,
+      "coefficients": [
+        -0.16252005590752305,
+        -1.7487131448348607,
+        861.1867008717572
+      ],
+      "date": "2026-07-01",
+      "delta_omega": 0.0,
+      "delta_minutes": 0.0
+    },
+    "lookup_azimuth_for_control_only": 13.299999999994128
+  },
+  {
+    "date": "2026-08-22",
+    "input_rows": 1440,
+    "all_copy_identical": true,
+    "max_time": "2026-08-22 11:29:00-03:00",
+    "max_gti": 1032.0088,
+    "vertex_time": "2026-08-22 12:06:16.185844236-03:00",
+    "raw_peak_to_vertex_min": 37.26976406666667,
+    "median15_peak": "2026-08-22 11:32:00-03:00",
+    "duplicates": 0,
+    "cadence_min": 1.0,
+    "cadence_max": 1.0,
+    "nonfinite_total": 0,
+    "initial_sigma": 71.0292751861343,
+    "final_sigma": 1.0633305684490009,
+    "clear_in_window": 81,
+    "clear_used": 66,
+    "clear_rejected": 15,
+    "symmetry_gti_mae_60min": 26.054217766913705,
+    "gti_ghi_detrended_correlation": 0.9947183683900757,
+    "residual_sides": [
+      {
+        "side": "left",
+        "mean_residual": 0.1084905701573805,
+        "n": 47
+      },
+      {
+        "side": "right",
+        "mean_residual": -0.24281222844609016,
+        "n": 21
+      }
+    ],
+    "production_exact_match": true,
+    "eot_spencer_min": -3.3296391950317994,
+    "spa_minus_spencer_window_min_deg": 0.10923580442344871,
+    "spa_minus_spencer_window_max_deg": 0.11455410529838073,
+    "baseline": {
+      "scenario": "baseline",
+      "center": "2026-08-22 11:29:00-03:00",
+      "window_minutes": 120,
+      "threshold": 2.0,
+      "mode": "iterative",
+      "degree": 2,
+      "n_window": 120,
+      "n_eligible": 120,
+      "n_used": 68,
+      "n_rejected": 52,
+      "omega_star": -10.431770781104499,
+      "left_count": 47,
+      "right_count": 21,
+      "left_extent_deg": 24.06744101765345,
+      "right_extent_deg": 5.682558982346538,
+      "vertex_inside": true,
+      "curvature_at_vertex": -0.38206209851103506,
+      "rmse_used": 1.0554830031266635,
+      "stale_coefficients": false,
+      "coefficients": [
+        -0.19103104925551753,
+        -3.985584235814884,
+        984.9763926726608
+      ],
+      "date": "2026-08-22",
+      "delta_omega": 0.0,
+      "delta_minutes": 0.0
+    },
+    "lookup_azimuth_for_control_only": 23.49999999999355
+  },
+  {
+    "date": "2026-08-31",
+    "input_rows": 1440,
+    "all_copy_identical": true,
+    "max_time": "2026-08-31 11:29:00-03:00",
+    "max_gti": 1001.9736,
+    "vertex_time": "2026-08-31 11:42:47.143621665-03:00",
+    "raw_peak_to_vertex_min": 13.785727016666668,
+    "median15_peak": "2026-08-31 11:25:00-03:00",
+    "duplicates": 0,
+    "cadence_min": 1.0,
+    "cadence_max": 1.0,
+    "nonfinite_total": 0,
+    "initial_sigma": 2.3364103066841784,
+    "final_sigma": 2.2255807998009205,
+    "clear_in_window": 120,
+    "clear_used": 118,
+    "clear_rejected": 2,
+    "symmetry_gti_mae_60min": 2.0097175095378117,
+    "gti_ghi_detrended_correlation": 0.9314383024105477,
+    "residual_sides": [
+      {
+        "side": "left",
+        "mean_residual": 0.3708753107476555,
+        "n": 71
+      },
+      {
+        "side": "right",
+        "mean_residual": -0.5602584481524624,
+        "n": 47
+      }
+    ],
+    "production_exact_match": true,
+    "eot_spencer_min": -0.7142603685762561,
+    "spa_minus_spencer_window_min_deg": 0.10317003794924773,
+    "spa_minus_spencer_window_max_deg": 0.10967422625552992,
+    "baseline": {
+      "scenario": "baseline",
+      "center": "2026-08-31 11:29:00-03:00",
+      "window_minutes": 120,
+      "threshold": 2.0,
+      "mode": "iterative",
+      "degree": 2,
+      "n_window": 120,
+      "n_eligible": 120,
+      "n_used": 118,
+      "n_rejected": 2,
+      "omega_star": -15.648935335205579,
+      "left_count": 71,
+      "right_count": 47,
+      "left_extent_deg": 18.19643175693848,
+      "right_extent_deg": 11.553568243061504,
+      "vertex_inside": true,
+      "curvature_at_vertex": -0.37149339649290386,
+      "rmse_used": 2.216130307853738,
+      "stale_coefficients": false,
+      "coefficients": [
+        -0.18574669824645193,
+        -5.813476139173339,
+        955.0621232966276
+      ],
+      "date": "2026-08-31",
+      "delta_omega": 0.0,
+      "delta_minutes": 0.0
+    },
+    "lookup_azimuth_for_control_only": 36.399999999992815
+  }
+]
