@@ -23,7 +23,7 @@ surface_azimuth = 0
 #%%
 # Definir la ruta de forma semántica
 ruta_base = Path.cwd()
-ruta_datos = ruta_base.parent / 'DATOS'
+ruta_datos = ruta_base.parent / 'data/irradiance'
 nombre_archivo = "AZ_DT_20260522T235900.csv"
 archivo_csv = ruta_datos / nombre_archivo
 

@@ -46,7 +46,13 @@ def save_daily_clearsky_plot(df, ghi_csk, msk_clearsky, output_dir="outputs/dail
     
     
     
-def plot_omega_fit(fit_result, date=None, output_dir="outputs/gti_fit_plots"):
+def plot_omega_fit(
+    fit_result,
+    date=None,
+    azimuth=None,
+    azimuth_nominal=None,
+    output_dir="outputs/gti_fit_plots",
+):
     
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -56,20 +62,13 @@ def plot_omega_fit(fit_result, date=None, output_dir="outputs/gti_fit_plots"):
 
     a, b, c = fit_result['coef']
     discard = fit_result['discard']
-    discard_passes = fit_result['discard_passes']
-    max_discard_passes = fit_result['max_discard_passes']
-    stop_label = {
-        'disabled': 'Descarte desactivado',
-        'no_new_outliers': 'Sin nuevos puntos fuera de 2σ',
-        'max_passes_reached': 'Límite alcanzado; residuos finales sin reevaluar',
-    }[fit_result['discard_stop_reason']]
-    discarded_pct = fit_result['discarded_pct']
+
     omega_star = fit_result['omega_star']
     gti_star = fit_result['gti_star']
 
     omega_fit = np.linspace(omega.min(),omega.max(),200)
     gti_fit = np.polyval([a, b, c], omega_fit)
-    fit_mode = 'Descarte por 2σ activado' if discard else 'Sin descarte'
+
 
     fig, ax = plt.subplots(figsize=(8,5))
     ax.scatter(omega,gti,label='GTI usada en el ajuste')
@@ -82,15 +81,20 @@ def plot_omega_fit(fit_result, date=None, output_dir="outputs/gti_fit_plots"):
     ax.plot(omega_star,gti_star,'ro',label=r'$\omega^\ast$')
 
     title = (
-        f'{date}\n'
-        f'{fit_mode} | pasadas: {discard_passes}/{max_discard_passes}\n'
-        f'Descartado acumulado: {discarded_pct:.2f}%\n'
-        f'{stop_label}\n'
-        f'a={a:.3f}, '
-        f'b={b:.3f}, '
-        f'c={c:.3f}\n'
-        f'ω*={omega_star:.3f}°'
+        f"{date}\n"
+        f"$\\omega^*$ = {fit_result['omega_star']:.1f}°"
     )
+    
+    if azimuth is not None:
+        title += f" | Azimuth = {azimuth:.1f}°"
+    
+    if azimuth_nominal is not None:
+        title += f" | Nominal = {azimuth_nominal:.1f}°"
+    
+    if fit_result.get("discarded_pct") is not None:
+        title += f"\nDiscarded = {fit_result['discarded_pct']:.1f}%"
+    
+    ax.set_title(title)
 
     ax.set_title(title)
 
@@ -101,5 +105,6 @@ def plot_omega_fit(fit_result, date=None, output_dir="outputs/gti_fit_plots"):
     ax.legend()
     
     fig.savefig(output_dir / f"{date}.png", dpi=200, bbox_inches="tight")
+    plt.close(fig)
 
     return fig, ax
