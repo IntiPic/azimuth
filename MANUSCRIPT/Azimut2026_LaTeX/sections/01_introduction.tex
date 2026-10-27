@@ -1,0 +1,38 @@
+\section{Introduction}\label{sec:introduction}
+
+\subsection{The importance of reliable surface-orientation metadata}
+
+In situ measurements of global tilted irradiance (GTI) are essential to estimate the output of photovoltaic systems, and its accuracy is directly related to the economic risk of such project. Orientation errors in tilted sensors can propagate to irradiance transposition and model validation studies, particularly at unattended sites.
+
+The optimal orientation of PV arrrays in terms of the year-round production is that of the Equator, i.e. due North (South) if the observer is located in the southern (northern) hemisphere. Small misalignments from this orientation can result in uncertainties that may impact in financial risk for PV projects. 
+
+Misalignment of tilted sensors is something that can occur for a variety of reasons: incorrect determination of the true north-south direction, poor fixation of the sensors, extreme weather conditions that may move the platforms where the sensors are located.
+
+Transposition models, that is, determination of GTI from GHI and assumptions about the diffuse component of radiation is highly dependent of the incidence angle of the direct component  of radiation, which also depends on the surface orientation, given by the tilt and azimuth.
+
+\citep{menyhart2015,urraca2017}.
+\draftnote{Add a quantitative motivation: how an azimuth error affects modeled GTI under representative conditions. Cite a dedicated study if used.}
+
+\subsection{Existing approaches to orientation inference}
+Orientation inference has been investigated using measured irradiance and
+modeled clear-sky responses \citep{barbier2019,piccioli2021}, and using
+photovoltaic generation measurements \citep{meng2020}. Our earlier conference
+paper introduced the peak-hour-angle approach (PA) and compared it with a
+model-error-minimization approach \citep{piccioli2021}. A subsequent thesis
+applied orientation diagnosis in the context of transposition-model evaluation
+\citep{piccioli2022thesis}.
+\draftnote{Complete state-of-the-art search, including studies after 2021. Distinguish irradiance-sensor orientation from PV-system orientation; avoid claiming novelty for the original PA method.}
+
+\subsection{Research gap and objectives}
+The remaining challenge is not only to estimate an azimuth, but to determine
+when that estimate is trustworthy. Specifically, the relationship between
+measurement quality, stability of the fitted GTI maximum, uncertainty in
+estimated azimuth, and practical usefulness for unattended stations requires
+systematic assessment.
+
+The objectives of this study are to (i) validate the peak-hour-angle approach
+against documented surface orientations; (ii) quantify uncertainty and the
+reliability of daily GTI fits; (iii) investigate robustness and multi-day
+aggregation; and (iv) illustrate its potential for diagnosing orientation
+inconsistencies and assessing their impact on transposition-model validation.
+\draftnote{Tighten the contribution statement after analysis. Specify what is genuinely new compared with SWC2021 and the thesis.}

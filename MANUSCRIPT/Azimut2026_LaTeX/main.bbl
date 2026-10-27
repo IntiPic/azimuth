@@ -1,0 +1,58 @@
+\begin{thebibliography}{6}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Menyhart et~al.(2015)Menyhart, Anda, and Nagy]{menyhart2015}
+Laszlo Menyhart, Angela Anda, and Zoltan Nagy.
+\newblock A new method for checking the leveling of pyranometers.
+\newblock \emph{Solar Energy}, 120:\penalty0 25--34, 2015.
+\newblock \doi{10.1016/j.solener.2015.06.033}.
+
+\bibitem[Urraca et~al.(2017)Urraca, Gracia-Amillo, Koubli, Huld, Trentmann,
+  Riihel{\"a}, Lindfors, Palmer, Gottschalg, and Antonanzas-Torres]{urraca2017}
+Ruben Urraca, Ana~M. Gracia-Amillo, Elena Koubli, Thomas Huld, Jorg Trentmann,
+  Aku Riihel{\"a}, Anders~V. Lindfors, Diane Palmer, Ralph Gottschalg, and
+  Fernando Antonanzas-Torres.
+\newblock Extensive validation of {CM SAF} surface radiation products over
+  {Europe}.
+\newblock \emph{Remote Sensing of Environment}, 199:\penalty0 171--186, 2017.
+\newblock \doi{10.1016/j.rse.2017.07.013}.
+
+\bibitem[Barbier et~al.(2019)Barbier, Blanc, and Saint-Drenan]{barbier2019}
+Thibaut Barbier, Philippe Blanc, and Yves-Marie Saint-Drenan.
+\newblock Software correction of angular misalignments of tilted reference
+  solar cells using clear-sky satellite open data.
+\newblock In \emph{Proceedings of the 36th European Photovoltaic Solar Energy
+  Conference and Exhibition (EU PVSEC 2019)}, Marseille, France, 2019.
+\newblock URL \url{https://hal.science/hal-02291410}.
+\newblock HAL identifier: hal-02291410; no DOI confirmed.
+
+\bibitem[Piccioli et~al.(2021)Piccioli, Abal, and David]{piccioli2021}
+Inti Piccioli, Gonzalo Abal, and Mathieu David.
+\newblock Surface azimuth estimation from solar irradiance on tilted surfaces.
+\newblock In \emph{Proceedings of the ISES Solar World Congress 2021}.
+  International Solar Energy Society, 2021.
+\newblock \doi{10.18086/swc.2021.39.02}.
+\newblock URL
+  \url{https://proceedings.ises.org/conference/swc2021/papers/swc2021-0109-Piccioli.pdf}.
+
+\bibitem[Meng et~al.(2020)Meng, Loonen, and Hensen]{meng2020}
+Bin Meng, Roel C. G.~M. Loonen, and Jan L.~M. Hensen.
+\newblock Data-driven inference of unknown tilt and azimuth of distributed {PV}
+  systems.
+\newblock \emph{Solar Energy}, 211:\penalty0 418--432, 2020.
+\newblock \doi{10.1016/j.solener.2020.09.077}.
+
+\bibitem[Piccioli~Artecona(2022)]{piccioli2022thesis}
+Inti~Anandas Piccioli~Artecona.
+\newblock Modelado de la irradiancia solar sobre superficies inclinadas:
+  Impacto de la separaci{\'o}n directa-difusa en los modelos de
+  transposici{\'o}n.
+\newblock Master's thesis, Universidad de la Rep{\'u}blica, Facultad de
+  Ingenier{\'i}a, Montevideo, Uruguay, 2022.
+\newblock URL \url{https://hdl.handle.net/20.500.12008/35834}.
+
+\end{thebibliography}

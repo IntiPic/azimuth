@@ -60,14 +60,20 @@ def estimate_omega_star(day_df, window_minutes, longitude, discard=True,
         raise ValueError("max_discard_passes debe ser un entero positivo.")
 
     gti = day_df.gti
-    equation_of_time = pv.solarposition.equation_of_time_spencer71(gti.index.day_of_year.unique())
     t_max = gti.idxmax()
     half_window = pd.Timedelta(minutes=window_minutes/2)
     msk_tmax = ((t_max - half_window < gti.index) & 
                 (gti.index <= t_max + half_window))
     times = gti.loc[msk_tmax].index
+    equation_of_time = pv.solarposition.equation_of_time_spencer71(
+        times.dayofyear.to_numpy())
+
     n_window = len(times)
-    hour_angle = pv.solarposition.hour_angle(times, longitude, equation_of_time)
+    hour_angle = pv.solarposition.hour_angle(
+        times,
+        longitude,
+        equation_of_time,
+    )
     
     omega = np.asarray(hour_angle)
     y = np.asarray(gti.loc[msk_tmax], dtype=float)

@@ -39,6 +39,13 @@ if str(REPO_ROOT) not in sys.path:
 from src.loader import load_gti_file
 import src.clearsky as cs
 
+STATION = "TA"
+
+cfg = STATIONS[STATION]
+
+latitude = cfg["latitude"]
+longitude = cfg["longitude"]
+tz = cfg["tz"]
 
 DEFAULT_LATITUDE = -34.918034
 DEFAULT_LONGITUDE = -56.166802

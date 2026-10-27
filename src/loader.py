@@ -2,28 +2,44 @@
 
 import pandas as pd
 
+from src.config import get_station_config
 
-def load_gti_file(filepath,tz_est="America/Montevideo"):
+
+def load_gti_file(filepath, station="AZ", tz_est=None):
+    cfg = get_station_config(station)
+    #tz = tz_est or cfg["tz"]
 
     df = pd.read_csv(filepath)
 
-    # Seleccionar columnas relevantes
-    df = df[["Timestamp","GHI1_AV (W/m2)","GTI_AV (W/m2)"]]
+    required = [
+        "Timestamp",
+        cfg["ghi_col"],
+        cfg["gti_col"],
+    ]
+    missing = [col for col in required if col not in df.columns]
+    if missing:
+        raise ValueError(
+            f"{filepath}: faltan columnas requeridas para {station}: {missing}"
+        )
 
-    # Renombrar
-    df = df.rename(columns={"Timestamp": "timestamp",
-            "GHI1_AV (W/m2)": "ghi",
-            "GTI_AV (W/m2)": "gti"})
+    df = df[required].rename(
+        columns={
+            "Timestamp": "timestamp",
+            cfg["ghi_col"]: "ghi",
+            cfg["gti_col"]: "gti",
+        }
+    )
 
-    # Convertir timestamp
+    df["ghi"] = pd.to_numeric(df["ghi"], errors="coerce")
+    df["gti"] = pd.to_numeric(df["gti"], errors="coerce")
+
     df["timestamp"] = pd.to_datetime(df["timestamp"]).dt.floor("min")
+    df["timestamp"] = (
+        df["timestamp"]
+        .dt.tz_localize(cfg["source_tz"])
+        .dt.tz_convert(cfg["tz"])
+    )
 
-    # Asignar zona horaria
-    df["timestamp"] = (df["timestamp"].dt.tz_localize(tz_est))
-
-    # Pasar a índice
-    df = df.set_index("timestamp")
+    df = df.set_index("timestamp").sort_index()
 
     return df
-
-

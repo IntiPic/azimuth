@@ -1,0 +1,105 @@
+\section{Methodology}\label{sec:methodology}
+
+\subsection{Solar geometry and azimuth convention}\label{subsec:geometry}
+Let $\omega$ denote the solar hour angle and $\beta$ the surface tilt. We
+define $\gamma=0$ for an equator-facing surface, with the sign convention
+made explicit for the hemisphere under study. The daily hour angle of maximum
+clear-sky GTI is denoted by $\omega^{*}$.
+\draftnote{Add solar-angle equations, the exact implementation of solar time and timestamps, timezone convention, and the explicit signed azimuth definition (east/west) used by Azimut2026. Note how the convention maps to pvlib if applicable.}
+
+\begin{figure}[t]
+\centering
+\figplaceholder{Geometry: tilt $\beta$, azimuth $\gamma$, hour angle $\omega$, and the controlled mount.}
+\caption{Conceptual geometry and experimental configuration. Replace the
+placeholder with a diagram and/or a photograph of the measurement system.}
+\label{fig:geometry}
+\end{figure}
+
+\subsection{Mapping the hour angle of maximum GTI to surface azimuth}
+\label{subsec:mapping}
+For a selected day $d$, the modeled relationship between surface azimuth and
+the location of the GTI maximum is represented by
+\begin{equation}
+  \hat\gamma_d = \mathcal{F}_d\!\left(\hat\omega_d^{*};\beta,\phi,\boldsymbol{p}_d\right),
+  \label{eq:azimuth_mapping}
+\end{equation}
+where $\phi$ is the site latitude and $\boldsymbol{p}_d$ denotes the
+assumptions and inputs used to construct the clear-sky/transposition mapping.
+The 2021 formulation used a fitted mapping between $\omega^{*}$ and $\gamma$
+\citep{piccioli2021}.
+\draftnote{Describe the mapping ACTUALLY implemented in the repository (analytical fit, LUT, interpolator, clear-sky inputs, transposition model). Do not assume that the 2021 tangent fit is still used. Specify the azimuth search domain and numerical resolution.}
+
+\subsection{Estimation of the daily GTI maximum}\label{subsec:dailyfit}
+For a suitable interval around the daily maximum, a quadratic approximation
+can be written as
+\begin{equation}
+  \GTI(\omega)\simeq a_2\omega^2+a_1\omega+a_0,
+  \qquad
+  \hat\omega^{*}=-\frac{a_1}{2a_2},\qquad a_2<0.
+  \label{eq:quadratic}
+\end{equation}
+The location of the fitted maximum, rather than the largest individual
+measurement, is used to reduce sensitivity to high-frequency fluctuations.
+\draftnote{Specify fit-window definition, sample cadence, fitting algorithm, iteration/stopping rules, physical constraints, and treatment of non-concave or poorly constrained fits. Verify these against current code.}
+
+\subsection{Clear-sky selection, outliers, and diagnostic indicators}
+\label{subsec:quality}
+A daily estimate is only meaningful if the irradiance maximum is sampled
+adequately and the retained GTI observations are suitable for fitting.
+Candidate diagnostics include fit residual dispersion, fraction of rejected
+points, residual asymmetry, maximum curvature, and temporal data coverage.
+\draftnote{Define the actual clear-sky and outlier masks with precise thresholds. Test the exceptional dates 2026-07-01, 2026-08-31, and 2026-09-17; distinguish physical cloud variability from an algorithmic selection artifact. Do not tune screening criteria solely to minimize observed angular error.}
+
+\subsection{Uncertainty propagation and confidence assessment}
+\label{subsec:uncertainty}
+Writing $\mathbf{a}=(a_2,a_1,a_0)$, the formal local uncertainty of
+$\hat\omega^{*}$ may be approximated by the delta method,
+\begin{equation}
+  u^2_{\omega^{*}}\simeq
+  \left(\nabla_{\mathbf{a}}\omega^{*}\right)^{\mathsf{T}}
+  \boldsymbol{\Sigma}_{\mathbf{a}}
+  \nabla_{\mathbf{a}}\omega^{*},
+  \label{eq:omega_uncertainty}
+\end{equation}
+with $\boldsymbol{\Sigma}_{\mathbf{a}}$ the covariance matrix of the
+fitted coefficients. A first-order propagated component is
+\begin{equation}
+ u_{\gamma,\mathrm{fit}} \simeq
+ \left|\frac{\partial\mathcal{F}_d}{\partial\omega^{*}}\right|
+ u_{\omega^{*}}.
+ \label{eq:gamma_uncertainty}
+\end{equation}
+This formal uncertainty does not, by itself, account for correlated residuals,
+incorrect atmospheric inputs, timestamp offsets, or errors in the reference
+orientation. Alternative uncertainty estimates and their calibration should
+therefore be evaluated.
+\draftnote{Compare covariance propagation with a time-aware bootstrap (e.g., blocks) and with empirical between-day spread. Report uncertainty components separately.}
+
+\subsection{Multi-day estimation and temporal stability}
+\label{subsec:aggregation}
+For a period expected to have stable orientation, daily estimates
+$\hat\gamma_d$ can be combined using robust or uncertainty-weighted procedures.
+A weighted mean may be considered as a baseline,
+\begin{equation}
+  \hat\gamma_{\mathrm{period}}=
+  \frac{\sum_d w_d\hat\gamma_d}{\sum_d w_d},
+  \qquad w_d=u_{\gamma,d}^{-2},
+  \label{eq:aggregation}
+\end{equation}
+provided that the daily uncertainties are calibrated and the effects of
+correlations and shared systematic errors are addressed.
+\draftnote{Compare median, robust location estimator, and weighted mean. Specify change-point detection procedure for historical stations, if used.}
+
+\subsection{Validation protocol and evaluation metrics}
+\label{subsec:metrics}
+The azimuth error for controlled orientation $j$ is
+$\Delta\gamma_j=\hat\gamma_j-\gamma_{\mathrm{ref},j}$.
+Performance is described by bias, mean absolute error, and root mean square
+error, together with repeatability across days:
+\begin{equation}
+  \MBE_{\gamma}=\frac{1}{N}\sum_{j=1}^{N}\Delta\gamma_j,\quad
+  \MAE_{\gamma}=\frac{1}{N}\sum_{j=1}^{N}|\Delta\gamma_j|,\quad
+  \RMSE_{\gamma}=\sqrt{\frac{1}{N}\sum_{j=1}^{N}\Delta\gamma_j^{2}}.
+  \label{eq:metrics}
+\end{equation}
+\draftnote{Define unit of analysis (orientation period vs day), between-day dependence, confidence intervals, and whether reference orientation uncertainty is included. Establish an untouched test set or cross-period protocol before screening/model selection.}

@@ -1,0 +1,91 @@
+% Azimut2026 -- manuscript skeleton, version 0.1 (October 2026)
+% Target journal (provisional): Solar Energy.
+% This is a neutral article class for drafting, NOT the journal submission template.
+% Change \drafttrue to \draftfalse before producing a clean reading copy.
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+\usepackage{geometry}
+\geometry{margin=2.6cm}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[hidelinks]{hyperref}
+\usepackage{siunitx}
+
+\newif\ifdraft
+\drafttrue  % EDIT THIS: \draftfalse hides internal notes/checklist.
+\newcommand{\draftnote}[1]{%
+  \ifdraft\par\smallskip\noindent{\color{red!65!black}\sffamily\footnotesize[TO DO: #1]}\par\smallskip\fi
+}
+\newcommand{\figplaceholder}[1]{%
+  \ifdraft\fbox{\begin{minipage}[c][3.4cm][c]{0.90\linewidth}
+    \centering\sffamily\small Figure pending\\[2mm]#1
+  \end{minipage}}%
+  \else\fbox{\begin{minipage}[c][2cm][c]{0.90\linewidth}\centering Figure pending\end{minipage}}\fi
+}
+\newcommand{\GTI}{\mathrm{GTI}}
+\newcommand{\GHI}{\mathrm{GHI}}
+\newcommand{\DHI}{\mathrm{DHI}}
+\newcommand{\DNI}{\mathrm{DNI}}
+\newcommand{\RMSE}{\mathrm{RMSE}}
+\newcommand{\MAE}{\mathrm{MAE}}
+\newcommand{\MBE}{\mathrm{MBE}}
+
+\title{Robust estimation of surface azimuth from tilted irradiance measurements:\\
+experimental validation, uncertainty assessment, and field applications}
+\author{Inti Piccioli\\[1mm]\small Coauthors and affiliations to be confirmed}
+\date{Working draft -- October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+An accurate description of the orientation of tilted irradiance sensors is essential
+for the interpretation of global tilted irradiance (GTI) observations and for the
+validation of irradiance transposition models. An approach based on the solar
+hour angle of the daily GTI maximum was previously proposed to infer surface
+azimuth from clear-sky observations. Here, we investigate the reliability of this
+approach using a controlled measurement campaign with documented surface
+orientations, and develop a framework for assessing fit quality, estimation
+uncertainty, and robustness. The method is also examined as a tool for diagnosing
+orientation inconsistencies in field measurements and quantifying their impact
+on transposition-model evaluation.
+\draftnote{Rewrite abstract when final numerical results exist: include sample size, azimuth range, main accuracy and uncertainty metrics, operational benefit, and limitations. Do not imply that field misalignments are independently verified unless they are.}
+\end{abstract}
+
+\noindent\textbf{Keywords:} tilted irradiance; surface azimuth; orientation
+misalignment; pyranometer; uncertainty; quality control; transposition models
+
+\input{sections/01_introduction}
+\input{sections/02_methodology}
+\input{sections/03_data}
+\input{sections/04_results}
+\input{sections/05_discussion}
+\input{sections/06_conclusions}
+
+\section*{Data and code availability}
+\draftnote{Specify public repository/version, persistent identifier if available, access to quality-controlled data, and limitations on redistributing third-party datasets.}
+To be completed.
+
+\section*{Acknowledgements}
+\draftnote{Funding, institutions, measurement technicians, collaborators, and computational infrastructure.}
+To be completed.
+
+\bibliographystyle{unsrtnat}
+\bibliography{references}
+
+\ifdraft
+\clearpage
+\appendix
+\input{internal_checklist}
+\fi
+\end{document}

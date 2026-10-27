@@ -1,0 +1,62 @@
+\section{Data and experimental setup}\label{sec:data}
+
+\subsection{Controlled azimuth campaign (2026)}\label{subsec:campaign}
+The primary validation dataset consists of measurements of GTI acquired at multiple documented orientations of a fixed tilted surface. In order to achieve this, an inclined Kipp and Zonen CMP6 pyranometer, with a tilt of 35 degrees, was mounted on a rotating graduated plate located at the rooftop of the Faculty of Engineering in Montevideo, Uruguay (Latitude: $ \SI{-34.92}{\degree}$ , Longitude: $ \SI{-56.17}{\degree}$, Elevation: ???).  Special care was taken when leveling the table where the plate is mounted as well as the inclined plane where the pyranometer is placed.
+
+GHI simultaneous data is acquired with a horizontal Kipp and Zonen (MODEL?) pyranometer, both calibrated and with traceability to the WMO (DETALLES?) and regularly maintained. The data is collected at 1-min intervals.
+
+True north ($\gamma = \SI{0}{\degree}$) was obtained with the help of the shadow of a vertical rod under clear sky conditions at the solar noon, as provided by the NASA solar calculator (WEBSITE?). 
+By comparing the north oriented GTI data under clear sky conditions with simultaneous GHI data, it was established that the misalignment of the tilted sensor was minimal  \draftnote{Assess uncertainty from the shadow thickness in cm, and discuss the gamma =0 correct orientation}
+
+
+\begin{table}[t]
+\centering
+\caption{Provisional inventory of the 2026 controlled experiment. Fill in from
+measurement metadata; do not infer reference precision from the step size.}
+\label{tab:campaign}
+\begin{tabular}{llll}
+\toprule
+Period / date & $\beta_{\mathrm{ref}}$ ($^\circ$) & $\gamma_{\mathrm{ref}}$ ($^\circ$) & Valid days \\
+\midrule
+To be completed & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Reference orientation and its uncertainty}
+\label{subsec:reference}
+
+The geographical North–South reference was established independently of the irradiance measurements using the shadow of a vertical rod at the predicted solar noon. The procedure was performed in late May using a cylindrical rod approximately 1 m high, mounted on a leveled horizontal surface. Rod verticality was checked against its supporting base using a right-angle reference.
+The resulting meridian line was marked directly on the supporting table and used to establish the zero-azimuth reference of the rotating platform. The platform featured angular graduations at 1° intervals, a bubble level, and mechanical fixation screws.
+The uncertainty associated with this reference procedure was explicitly considered when assessing absolute azimuth errors. Additionally, relative angular displacements were evaluated independently of the common initial alignment error.
+
+
+We distinguish between nominal azimuth ($\gamma_{\mathrm{nom}}$), corresponding to the reported or intended surface orientation, and reference azimuth ($\gamma_{\mathrm{ref}}$), established through an independent geometric procedure. In the controlled experimental campaign, reference orientations were determined using an astronomically established North–South direction and a graduated rotating platform. For the remote stations, only nominal orientations were generally available, and the estimated azimuths were therefore interpreted as potential orientation corrections rather than independently validated measurements.
+\draftnote{Document the reference procedure (survey, calibrated instrument, alignment, fixture), repeatability and estimated uncertainty for tilt and azimuth. Avoid claiming absolute angular accuracy better than the reference allows.}
+
+Esto es un tema a discutir - Agus?
+
+
+\subsection{Quality control and dataset construction}
+\label{subsec:datasetqc}
+All quality-control procedures should be specified before evaluating their
+impact on azimuth errors. In addition to physical plausibility screening, the
+availability of suitable clear-sky intervals around the GTI maximum must be
+reported together with the fraction of excluded samples.
+\draftnote{Create an auditable QC log: raw count -> daytime -> clear sky -> fit window -> outlier rejection -> valid estimates, with per-day reasons. State whether masks use GTI alone or additional channels.}
+
+
+\subsection{Independent field applications}\label{subsec:fielddata}
+To assess operational usefulness, the method will also be applied to
+historical GTI measurements in which the reported orientation may be
+uncertain or time-dependent \citep{piccioli2022thesis}.
+
+\begin{itemize}
+	\item Estación TA, describir equipos, timespan, medidas disponibles, instrumentación y describir evidencia de que la misma se encuentra desviada un ángulo indeterminado
+	\item Esto resulta en modelos de transposición cuya validación es errónea, con métricas que no coinciden con lo esperado según la literatura
+	\item GTI en cielo claro muestra un máximo en $\omega^{\ast} \neq 0$
+	\item Reportar cantidad de días claros evaluados, valores obtenidos, promedio de azimuts
+	\item Mostrar métricas con el valor de azimut calculado y ver cómo los porcentajes se acercan a lo esperado y conocido en la literatura.
+\end{itemize}
+
+\draftnote{Select and describe stations from the thesis; add site identifiers, available periods, instrumentation, and any independent evidence of orientation changes. State clearly which cases are diagnoses rather than externally validated ground truth.}

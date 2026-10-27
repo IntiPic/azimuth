@@ -1,0 +1,79 @@
+\section{Results}\label{sec:results}
+
+\subsection{Dataset audit and behavior of the GTI fits}
+\label{subsec:fitresults}
+\draftnote{Show representative good and difficult fit examples (especially 2026-07-01, 2026-08-31, 2026-09-17). Quantify why observations are removed and how the rejection moves $\hat\omega^{*}$. Distinguish noisy data from biased fitting choices.}
+\begin{figure}[t]
+\centering
+\figplaceholder{Panel examples: well-behaved curve; 2026-07-01; 2026-08-31; 2026-09-17.}
+\caption{Representative fits to daily GTI maxima, including cases for which
+measurement noise or sample rejection complicates the determination of
+$\omega^{*}$.}
+\label{fig:fits}
+\end{figure}
+
+\subsection{Accuracy and repeatability against controlled orientations}
+\label{subsec:accuracy}
+\draftnote{Provide overall $\MBE_\gamma$, $\MAE_\gamma$, $\RMSE_\gamma$, orientation-level uncertainty, and independent reference uncertainty. Plot $\hat\gamma$ versus $\gamma_{\rm ref}$, not only nominal values. Avoid pseudo-replication across days.}
+\begin{figure}[t]
+\centering
+\figplaceholder{Estimated versus reference azimuth; 1:1 line; uncertainties; per-orientation markers.}
+\caption{Estimated azimuth versus independently determined reference azimuth
+for the controlled experiment.}
+\label{fig:validation}
+\end{figure}
+
+\subsection{Fit quality, angular error, and uncertainty calibration}
+\label{subsec:uncertaintyresults}
+\draftnote{Evaluate correlation/predictive value of RMSE, reject fraction, asymmetry, curvature, and $u_{\omega^{*}}$; compare predicted intervals with observed errors. Do not describe a proxy as calibrated uncertainty without coverage testing.}
+\begin{figure}[t]
+\centering
+\figplaceholder{Angular error and repeatability versus azimuth; fitted uncertainty and empirical coverage.}
+\caption{Error distribution and reliability of angular uncertainty estimates
+as a function of surface orientation and GTI-fit diagnostics.}
+\label{fig:uncertainty}
+\end{figure}
+
+\subsection{Benefits of multi-day aggregation}
+\label{subsec:multidayresults}
+\draftnote{Show convergence of error and between-sample variability as a function of the number of independent clear-sky days. Compare robust estimators and predefine resampling.}
+\begin{figure}[t]
+\centering
+\figplaceholder{Error/dispersion versus number of clear days and selected perturbation tests.}
+\caption{Convergence of multi-day azimuth estimation and sensitivity to data
+availability or fitting conditions.}
+\label{fig:robustness}
+\end{figure}
+
+\subsection{Sensitivity to measurement and modeling perturbations}
+\label{subsec:sensitivity}
+\draftnote{Perturb tilt, time stamps, cadence, GTI noise, missing data, fit interval and clear-sky inputs. Prioritize confounding between apparent azimuth error and timestamp/tilt errors. Separate simulation from field evidence. Supplemental plots as needed.}
+
+\subsection{Diagnosis of field-station orientation}
+\label{subsec:fieldresults}
+\draftnote{Show $\hat\gamma(t)$ and uncertainty by station, stable periods and potential changes, with any external supporting evidence. Avoid asserting true azimuth from GTI alone.}
+\begin{figure}[t]
+\centering
+\figplaceholder{Time series of field-station estimated azimuth and documented station events.}
+\caption{Application to historical field-station measurements: temporal
+behavior and possible orientation changes.}
+\label{fig:field}
+\end{figure}
+
+\subsection{Consequences for transposition-model evaluation}
+\label{subsec:transpositionresults}
+\draftnote{Compare $\GTI_{\rm model}(\gamma_{\rm nom})$ and $\GTI_{\rm model}(\hat\gamma)$ with measurements. Report MBD/RMSD and number of samples, on held-out data if possible. Test multiple models and discuss non-independence if the mapping itself uses a transposition model.}
+\begin{table}[t]
+\centering
+\caption{Illustrative layout for the impact of orientation metadata on
+transposition-model evaluation. All entries remain to be computed.}
+\label{tab:transposition}
+\begin{tabular}{lllll}
+\toprule
+Station & Model & Azimuth source & MBD & RMSD \\
+\midrule
+-- & -- & Nominal & -- & -- \\
+-- & -- & Estimated & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
