@@ -7,32 +7,33 @@ def get_clear_sky_mask(df,latitude,longitude,tz_est,altitude=None):
     Devuelve una máscara booleana indicando
     los minutos considerados de cielo claro.
     """
-    
+
     times = df.index
     loc = pv.location.Location(latitude, longitude, tz_est, altitude)
     df_csk = loc.get_clearsky(times)
-    
+
     msk_csk = pv.clearsky.detect_clearsky(df['ghi'], df_csk['ghi'])
-                                          
+
 
     return msk_csk, df_csk["ghi"]
 
 
 
 def count_clear_sky_minutes_around_max(gti,clear_mask,window_minutes=60):
-      
+
     t_max = gti.idxmax()
     half_window = pd.Timedelta(minutes=window_minutes/2)
-    msk_tmax = ((t_max - half_window < gti.index) & 
+    msk_tmax = ((t_max - half_window < gti.index) &
                 (gti.index <= t_max + half_window))
-    
+
     count = clear_mask[msk_tmax].sum()
-    
-    
+
+
     return count
 
 def estimate_omega_star(day_df, window_minutes, longitude, discard=True,
-                        max_discard_passes=1):
+                        max_discard_passes=1, *,
+                        latitude=None, eot_method="spencer"):
     """Ajusta GTI directamente contra el ángulo horario real en grados.
 
     Con discard=True realiza hasta max_discard_passes evaluaciones de 2σ
@@ -62,11 +63,28 @@ def estimate_omega_star(day_df, window_minutes, longitude, discard=True,
     gti = day_df.gti
     t_max = gti.idxmax()
     half_window = pd.Timedelta(minutes=window_minutes/2)
-    msk_tmax = ((t_max - half_window < gti.index) & 
+    msk_tmax = ((t_max - half_window < gti.index) &
                 (gti.index <= t_max + half_window))
     times = gti.loc[msk_tmax].index
-    equation_of_time = pv.solarposition.equation_of_time_spencer71(
-        times.dayofyear.to_numpy())
+    if eot_method == "spa":
+        if latitude is None:
+            raise ValueError("SPA requiere conocer la latitud.")
+
+        solar_position = pv.solarposition.get_solarposition(
+            times,
+            latitude=latitude,
+            longitude=longitude,
+            method="nrel_numpy",
+        )
+        equation_of_time = solar_position["equation_of_time"].to_numpy()
+
+    elif eot_method == "spencer":
+        equation_of_time = pv.solarposition.equation_of_time_spencer71(
+            times.dayofyear.to_numpy()
+        )
+
+    else:
+        raise ValueError(f"Método EOT desconocido: {eot_method}")
 
     n_window = len(times)
     hour_angle = pv.solarposition.hour_angle(
@@ -74,17 +92,17 @@ def estimate_omega_star(day_df, window_minutes, longitude, discard=True,
         longitude,
         equation_of_time,
     )
-    
+
     omega = np.asarray(hour_angle)
     y = np.asarray(gti.loc[msk_tmax], dtype=float)
-    
+
     mask = np.isfinite(omega) & np.isfinite(y)
     n_nonfinite = int((~mask).sum())
-    
+
     omega = omega[mask]
     y = y[mask]
     candidate_times = times[mask]
-    
+
     if len(omega) < 6:
         raise ValueError(
             f"Se requieren al menos seis puntos finitos en la ventana; hay {len(omega)}."
@@ -149,7 +167,7 @@ def estimate_omega_star(day_df, window_minutes, longitude, discard=True,
     gti_star = np.polyval(coef, omega_star)
     if not np.isfinite(gti_star):
         raise ValueError("La GTI del máximo final no es finita.")
-    
+
     return {
         'omega': omega,
         'gti': y,

@@ -1,0 +1,29 @@
+{
+  "station": "AZ",
+  "path": "lookup/AZ/lookup_omega_gamma_1s.nc",
+  "sha256": "3b2c2f84d4cc342f190a988a8328d153f954f5a3835aef3260f0dc319c489fcf",
+  "size_bytes": 5285705,
+  "shape": [
+    1801,
+    365
+  ],
+  "azimuth_step_deg": 0.1,
+  "temporal_resolution_s": 1,
+  "reference_year": 2026,
+  "generator": "lookup_table_configurable.py",
+  "attrs": {
+    "station": "AZ",
+    "surface_tilt": "35.0",
+    "albedo": "0.25",
+    "model": "Perez-Driesse",
+    "latitude": "-34.918034",
+    "longitude": "-56.166802",
+    "timezone": "America/Montevideo",
+    "reference_year": "2026",
+    "azimuth_min": "-90.0",
+    "azimuth_max": "90.0",
+    "azimuth_step": "0.1",
+    "temporal_resolution_seconds": "1",
+    "maximum_method": "1min coarse search + 1s local argmax"
+  }
+}

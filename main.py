@@ -155,6 +155,8 @@ def main():
             longitude,
             discard=DISCARD,
             max_discard_passes=MAX_DISCARD_PASSES,
+            latitude=cfg["latitude"],
+            eot_method=cfg.get("eot_method", "spencer"),
         )
 
         omega_star = fit_result["omega_star"]
