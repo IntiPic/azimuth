@@ -19,7 +19,7 @@ from src.plotting import save_daily_clearsky_plot, plot_omega_fit
 # CONFIGURACIÓN DE LA CORRIDA
 # ============================================================
 
-STATION = "TA"
+STATION = "AZ"
 
 WINDOW_MINUTES = 120
 DISCARD = True
@@ -96,9 +96,18 @@ def main():
         )
 
     lookup_dir = REPO_ROOT / cfg["lookup_table"]
+    # Verificación de identidad de LUT antes de procesar datos.
+    estimator = AzimuthEstimator(
+        latitude, longitude, tilt,
+        lookup_table=lookup_dir,
+        station=STATION,
+        expected_sha256=cfg.get("lookup_sha256"),
+    )
 
     print(f"Estación: {STATION}")
     print(f"Tilt:     {tilt:.1f}°")
+    print(f"LUT:      {estimator.lookup_table}")
+    print(f"SHA-256:  {estimator.lookup_sha256}")
     print(f"Casos:    {len(files)}")
     print()
 
@@ -147,13 +156,6 @@ def main():
 
         omega_star = fit_result["omega_star"]
 
-        estimator = AzimuthEstimator(
-            latitude,
-            longitude,
-            tilt,
-            lookup_table=lookup_dir,
-        )
-        
         lookup_year = cfg.get("lookup_reference_year", 2026)
 
         lookup_date = pd.Timestamp(
