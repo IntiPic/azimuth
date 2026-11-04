@@ -118,7 +118,7 @@ def main():
         products += save_figure(time_series(data), figure_dir, "F01_azimuth_over_time")
         products += save_figure(estimated_vs_nominal(data["AZ"]), figure_dir, "F02_estimated_vs_nominal_AZ")
         products += save_figure(differences(data["AZ"], summaries[0]), figure_dir, "F03_differences_by_nominal_AZ")
-    
+
         products += generate_lut_figure([
             "--output-dir", str(figure_dir)
         ])
