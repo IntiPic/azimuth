@@ -25,7 +25,7 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CSV = ROOT / "lookup" / "AZ" / "lookup_table_1s.csv"
-FIG_DIR = ROOT / "paper" / "outputs" / "publication_v1" / "figures"
+FIG_DIR = ROOT / "paper" / "outputs" / "publication_v2" / "figures"
 
 KEY_DAYS = [
     ("2026-03-21", "March equinox"),
@@ -35,11 +35,11 @@ KEY_DAYS = [
 ]
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--csv", type=Path, default=DEFAULT_CSV)
     parser.add_argument("--output-dir", type=Path, default=FIG_DIR)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     if not args.csv.is_file():
         raise FileNotFoundError(f"Cannot find LUT CSV: {args.csv}")
@@ -140,6 +140,7 @@ def main():
 
     print(f"Figure saved: {pdf_path}")
     print(f"Preview saved: {png_path}")
+    return [pdf_path, png_path]
 
 
 if __name__ == "__main__":

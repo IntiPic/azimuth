@@ -14,7 +14,9 @@ import numpy as np
 
 from generate_tables import (
     arguments, load_results, prepare_run, summarize, write_manifest, write_tables,
+    ROOT, sha256,
 )
+from generate_lut_figure import main as generate_lut_figure, DEFAULT_CSV
 from paper_style import BLUE, ORANGE, ORIENTATIONS, paper_context
 
 
@@ -116,6 +118,10 @@ def main():
         products += save_figure(time_series(data), figure_dir, "F01_azimuth_over_time")
         products += save_figure(estimated_vs_nominal(data["AZ"]), figure_dir, "F02_estimated_vs_nominal_AZ")
         products += save_figure(differences(data["AZ"], summaries[0]), figure_dir, "F03_differences_by_nominal_AZ")
+    
+        products += generate_lut_figure([
+            "--output-dir", str(figure_dir)
+        ])
     details = {
         "F01": "all 7 AZ and 29 TA rows; marker-only; nominal markers only on AZ observed dates; different panel y ranges",
         "F02": "7 AZ estimates from SPA EOT and 1-second LUT; identity line; equal axis limits",
@@ -123,6 +129,9 @@ def main():
         "F03_summary_groups": [float(v) for v in summaries[0].loc[summaries[0]["N"].ge(2), "nominal_azimuth_deg"]],
         "PNG_dpi": 300,
         "PDF": "vector paths and embedded TrueType fonts; no rasterized artists",
+        "LUT": "Seasonal azimuth-hour-angle relation from the AZ 1-second LUT",
+        "LUT_csv": str(DEFAULT_CSV.relative_to(ROOT)),
+        "LUT_csv_sha256": sha256(DEFAULT_CSV.read_bytes()),
     }
     manifest = write_manifest(run_dir, provenance, products, summaries, details)
     print(f"Validated AZ=7, TA=29.\nFigures: {figure_dir}\nTables: {table_dir}\nManifest: {manifest}")
