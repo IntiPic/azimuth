@@ -4,6 +4,7 @@
 # Datos
 data/
 DATOS/
+/lookup/
 
 # Resultados
 outputs/

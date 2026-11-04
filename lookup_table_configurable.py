@@ -50,6 +50,11 @@ surface_tilt = cfg["tilt"]
 tz_est = pytz.timezone(cfg["tz"])
 
 lookup_path = REPO_ROOT / cfg["lookup_table"]
+if lookup_path.exists():
+    raise FileExistsError(
+        f"La LUT canónica ya existe: {lookup_path}. "
+        "No se sobrescribe; use una ruta de salida nueva para otra generación."
+    )
 lookup_path.parent.mkdir(parents=True, exist_ok=True)
 
 out_dir = lookup_path.parent

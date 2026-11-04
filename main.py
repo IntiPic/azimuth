@@ -60,7 +60,7 @@ def main():
         raise FileNotFoundError(
             f"No existe {candidates_path}. "
             f"Corré primero analysis/generate_daily_screening.py "
-            f"con STATION={STATION!r}."
+            f"con --station {STATION}."
         )
 
     candidates = pd.read_csv(candidates_path)
@@ -144,7 +144,10 @@ def main():
             }
         )
 
-        save_daily_clearsky_plot(df, ghi_csk, msk_clearsky)
+        save_daily_clearsky_plot(
+            df, ghi_csk, msk_clearsky,
+            output_dir=REPO_ROOT / cfg["daily_plots_dir"],
+        )
 
         fit_result = cs.estimate_omega_star(
             df,
@@ -178,6 +181,7 @@ def main():
             date=date,
             azimuth=azimuth,
             azimuth_nominal=azimuth_nominal,
+            output_dir=REPO_ROOT / cfg["fit_plots_dir"],
         )
 
         print(

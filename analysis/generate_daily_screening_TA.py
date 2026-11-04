@@ -2,8 +2,8 @@
 """
 Genera gráficos diarios para el screening de candidatos a cielo claro.
 
-No estima omega_star ni azimut. La estación se selecciona con STATION y sus
-particularidades se leen desde src/config.py.
+No estima omega_star ni azimut. La estación se selecciona con --station
+(por defecto STATION) y sus particularidades se leen desde src/config.py.
 """
 
 from __future__ import annotations
@@ -50,9 +50,15 @@ DATES = [
 SKIP_EXISTING = False
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args(default_station=None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Genera figuras diarias para selección de días claros."
+    )
+    parser.add_argument(
+        "--station",
+        choices=("AZ", "TA"),
+        default=default_station or STATION,
+        help="Estación a procesar (AZ o TA).",
     )
     parser.add_argument(
         "--start",
@@ -155,9 +161,10 @@ def save_screening_plot(
     plt.close(fig)
 
 
-def main() -> None:
-    args = parse_args()
-    cfg = get_station_config(STATION)
+def main(default_station=None) -> None:
+    args = parse_args(default_station)
+    station = args.station
+    cfg = get_station_config(station)
 
     start_value = args.start or START_DATE or cfg["valid_from"]
     end_value = args.end or END_DATE
@@ -177,7 +184,7 @@ def main() -> None:
     files = sorted(REPO_ROOT.glob(cfg["data_glob"]))
     if not files:
         raise FileNotFoundError(
-            f"No se encontraron CSV para {STATION} con patrón: "
+            f"No se encontraron CSV para {station} con patrón: "
             f"{REPO_ROOT / cfg['data_glob']}"
         )
 
@@ -187,7 +194,7 @@ def main() -> None:
     skipped_date = 0
     errors = 0
 
-    print(f"Estación: {STATION}")
+    print(f"Estación: {station}")
     print(f"Datos:    {cfg['data_glob']}")
     print(f"Salida:   {out_dir}")
     print(f"Período:  {start_date} -> {end_date or 'último disponible'}")
@@ -195,7 +202,7 @@ def main() -> None:
 
     for file_path in files:
         try:
-            df = load_gti_file(file_path, station=STATION)
+            df = load_gti_file(file_path, station=station)
 
             if df.empty:
                 print(f"[WARN] {file_path.name}: archivo vacío")
@@ -252,7 +259,7 @@ def main() -> None:
 
             diagnostics.append(
                 {
-                    "station": STATION,
+                    "station": station,
                     "date": date,
                     "file": file_path.name,
                     "source_path": str(file_path.relative_to(REPO_ROOT)),
