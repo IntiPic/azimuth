@@ -13,6 +13,7 @@ import json
 import platform
 from pathlib import Path
 import re
+import os
 import shlex
 import subprocess
 import sys
@@ -23,10 +24,12 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "paper" / "outputs"
 INPUTS = {
-    "AZ": "outputs/AZ/results/spa_1s/azimuth_results_20261104_175427.csv",
+    "AZ": os.environ.get(
+        "AZ_RESULTS_CSV",
+        "outputs/AZ/results/spa_1s/azimuth_results.csv",
+    ),
     "TA": "outputs/TA/results/azimuth_results_20261103_204427.csv",
 }
-COUNTS = {"AZ": 7, "TA": 29}
 COMMON = ["station", "date", "doy", "tilt", "omega_star", "azimuth",
           "discarded_pct", "discard_passes", "discard_stop_reason"]
 AZ_EXTRA = ["azimuth_nominal", "azimuth_error_deg", "azimuth_abs_error_deg"]
@@ -41,8 +44,8 @@ def validate_frame(frame, station):
     expected = COMMON + (AZ_EXTRA if station == "AZ" else [])
     if len(frame.columns) != len(expected) or set(frame.columns) != set(expected):
         raise ValueError(f"{station}: expected columns {expected}, got {list(frame.columns)}")
-    if len(frame) != COUNTS[station]:
-        raise ValueError(f"{station}: expected {COUNTS[station]} rows, got {len(frame)}")
+    if frame.empty:
+        raise ValueError(f"{station}: empty results CSV")
     if frame.isna().any().any() or not frame["station"].eq(station).all():
         raise ValueError(f"{station}: missing values or incorrect station")
     frame = frame.copy()
@@ -72,8 +75,8 @@ def validate_frame(frame, station):
     if not frame["discard_stop_reason"].isin(["max_passes_reached", "no_new_outliers"]).all():
         raise ValueError(f"{station}: unexpected discard stop reason")
     if station == "AZ":
-        if frame.groupby("azimuth_nominal").size().to_dict() != {0.0: 1, 10.0: 3, 20.0: 1, 30.0: 2}:
-            raise ValueError("AZ: unexpected nominal orientations/counts; 40 degrees is not represented")
+        if not frame["azimuth_nominal"].between(-90, 90).all():
+            raise ValueError("AZ: nominal azimuth outside LUT range")
         frame["delta_gamma"] = frame["azimuth"] - frame["azimuth_nominal"]
         if not frame["delta_gamma"].abs().lt(180).all():
             raise ValueError("AZ: differences cross the angular branch; review before publication")
@@ -228,7 +231,7 @@ def write_manifest(run_dir, provenance, products, summaries, details=None):
             "dispersion": "descriptive across retained days; not calibrated uncertainty or standard error",
             "date": "CSV date is the local GTI maximum calendar date (America/Montevideo), per main.py and src/config.py; no time-of-day present",
             "period": "first to last retained date, not continuous measurement coverage",
-            "nominal": "AZ CSV nominal values only; not independent ground truth; no 40-degree cases; TA has no nominal",
+            "nominal": "AZ CSV nominal values only; not independent ground truth; TA has no nominal",
             "source_error": "input azimuth_error_deg has the opposite sign and is checked but not used to calculate metrics",
             "angular_convention": "unchanged from input CSVs; no origin or sign conversion",
         },
@@ -246,8 +249,11 @@ def write_manifest(run_dir, provenance, products, summaries, details=None):
 
 def arguments(description):
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument("--run-id", default=datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S_%fZ"),
-                        help="New output subdirectory name; an existing run is never overwritten")
+    parser.add_argument(
+        "--run-id",
+        default="current",
+        help="Output directory identifier",
+    )
     return parser.parse_args()
 
 
@@ -258,7 +264,7 @@ def main():
     run_dir, table_dir, _ = prepare_run(args.run_id)
     products = write_tables(table_dir, summaries)
     manifest = write_manifest(run_dir, provenance, products, summaries)
-    print(f"Validated AZ=7, TA=29. Tables: {table_dir}\nManifest: {manifest}")
+    print(f"Validated AZ={len(data['AZ'])}, TA={len(data['TA'])}. Tables: {table_dir}\nManifest: {manifest}")
 
 
 if __name__ == "__main__":

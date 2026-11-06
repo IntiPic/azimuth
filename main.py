@@ -226,10 +226,8 @@ def main():
     output_dir = REPO_ROOT / cfg["results_dir"]
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    timestamp = pd.Timestamp.now().strftime("%Y%m%d_%H%M%S")
-
-    results_path = output_dir / f"azimuth_results_{timestamp}.csv"
-    diagnostics_path = output_dir / f"azimuth_diagnostics_{timestamp}.csv"
+    results_path = output_dir / "azimuth_results.csv"
+    diagnostics_path = output_dir / "azimuth_diagnostics.csv"
 
     df_results.to_csv(results_path, index=False)
     df_diagnostics.to_csv(diagnostics_path, index=False)

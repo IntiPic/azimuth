@@ -32,8 +32,8 @@ def time_series(data):
                        label=r"Nominal $\gamma_{\mathrm{nom}}$")
             ax.legend(loc="upper left", bbox_to_anchor=(0.17, 1.02), ncol=2,
                       handletextpad=0.4, columnspacing=1.2)
-            ax.set_ylim(-4, 44)
-            ax.set_yticks([0, 10, 20, 30, 40])
+            ax.set_ylim(-4, 50)
+            ax.set_yticks([0, 10, 20, 30, 40, 50])
         else:
             ax.set_ylim(-17.1, -10.6)
             ax.set_yticks([-16, -14, -12])
@@ -51,13 +51,13 @@ def time_series(data):
 
 def estimated_vs_nominal(az):
     fig, ax = plt.subplots(figsize=(3.5, 3.5), layout="constrained")
-    ax.plot([-5, 40], [-5, 40], color="0.45", linestyle="--", linewidth=0.9, zorder=1)
+    ax.plot([-5, 50], [-5, 50], color="0.45", linestyle="--", linewidth=0.9, zorder=1)
     for nominal, group in az.groupby("azimuth_nominal", sort=True):
         color, marker = ORIENTATIONS[nominal]
         ax.scatter(group["azimuth_nominal"], group["azimuth"], s=33,
                    color=color, marker=marker, edgecolor="white", linewidth=0.4,
                    zorder=3, label=rf"{nominal:.0f}$^\circ$")
-    ax.set(xlim=(-5, 40), ylim=(-5, 40), xticks=[0, 10, 20, 30, 40], yticks=[0, 10, 20, 30, 40])
+    ax.set(xlim=(-5, 50), ylim=(-5, 50), xticks=[0, 10, 20, 30, 40, 50], yticks=[0, 10, 20, 30, 40, 50])
     ax.set_aspect("equal", adjustable="box")
     ax.set_xlabel(r"Nominal azimuth, $\gamma_{\mathrm{nom}}$ ($^\circ$)")
     ax.set_ylabel(r"Estimated azimuth, $\hat{\gamma}$ ($^\circ$)")
@@ -86,7 +86,7 @@ def differences(az, summary):
         ticks.append(position)
         labels.append(rf"{nominal:.0f}$^\circ$" + f"\n$N={row.N}$")
     ax.set_xticks(ticks, labels)
-    ax.set(xlim=(-0.5, 3.55), ylim=(-3.2, 8.5))
+    ax.set(xlim=(-0.5, len(ticks) - 0.45), ylim=(-3.2, 8.5))
     ax.set_yticks([-2, 0, 2, 4, 6, 8])
     ax.set_xlabel(r"Nominal azimuth, $\gamma_{\mathrm{nom}}$")
     ax.set_ylabel(r"$\Delta\gamma=\hat{\gamma}-\gamma_{\mathrm{nom}}$ ($^\circ$)")
@@ -123,9 +123,9 @@ def main():
             "--output-dir", str(figure_dir)
         ])
     details = {
-        "F01": "all 7 AZ and 29 TA rows; marker-only; nominal markers only on AZ observed dates; different panel y ranges",
-        "F02": "7 AZ estimates from SPA EOT and 1-second LUT; identity line; equal axis limits",
-        "F03": "all 7 daily signed differences; small deterministic horizontal offsets; summary mean and sample SD only for N>=2, taken directly from T01",
+        "F01": f"all {len(data['AZ'])} AZ and {len(data['TA'])} TA rows; marker-only; nominal markers only on AZ observed dates; different panel y ranges",
+        "F02": f"{len(data['AZ'])} AZ estimates from SPA EOT and 1-second LUT; identity line; equal axis limits",
+        "F03": f"all {len(data['AZ'])} daily signed differences; small deterministic horizontal offsets; summary mean and sample SD only for N>=2, taken directly from T01",
         "F03_summary_groups": [float(v) for v in summaries[0].loc[summaries[0]["N"].ge(2), "nominal_azimuth_deg"]],
         "PNG_dpi": 300,
         "PDF": "vector paths and embedded TrueType fonts; no rasterized artists",
@@ -134,7 +134,7 @@ def main():
         "LUT_csv_sha256": sha256(DEFAULT_CSV.read_bytes()),
     }
     manifest = write_manifest(run_dir, provenance, products, summaries, details)
-    print(f"Validated AZ=7, TA=29.\nFigures: {figure_dir}\nTables: {table_dir}\nManifest: {manifest}")
+    print(f"Validated AZ={len(data['AZ'])}, TA={len(data['TA'])}.\nFigures: {figure_dir}\nTables: {table_dir}\nManifest: {manifest}")
     print(summaries[0].to_string(index=False))
     print(summaries[1].to_string(index=False))
 
