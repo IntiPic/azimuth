@@ -15,3 +15,15 @@ __pycache__/
 
 # Spyder
 .spyproject/
+
+# LaTeX auxiliary files
+MANUSCRIPT/**/*.aux
+MANUSCRIPT/**/*.log
+MANUSCRIPT/**/*.out
+MANUSCRIPT/**/*.synctex.gz
+MANUSCRIPT/**/*.fls
+MANUSCRIPT/**/*.fdb_latexmk
+MANUSCRIPT/**/*.toc
+MANUSCRIPT/**/*.bbl
+MANUSCRIPT/**/*.blg
+MANUSCRIPT/Azimut2026_LaTeX/main.pdf
