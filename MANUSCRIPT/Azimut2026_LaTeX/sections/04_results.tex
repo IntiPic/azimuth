@@ -1,30 +1,66 @@
 \section{Results}\label{sec:results}
 
-\subsection{Dataset audit and behavior of the GTI fits}
-\label{subsec:fitresults}
-\draftnote{Show representative good and difficult fit examples (especially 2026-07-01, 2026-08-31, 2026-09-17). Quantify why observations are removed and how the rejection moves $\hat\omega^{*}$. Distinguish noisy data from biased fitting choices.}
-\begin{figure}[t]
-\centering
-\figplaceholder{Panel examples: well-behaved curve; 2026-07-01; 2026-08-31; 2026-09-17.}
-\caption{Representative fits to daily GTI maxima, including cases for which
-measurement noise or sample rejection complicates the determination of
-$\omega^{*}$.}
-\label{fig:fits}
+\begin{itemize}
+	\item Tabla de métricas de azimut nominal vs calculado (validación)
+	\item Scatterplot 
+	\item Incertidumbre en la estimación, por azimut
+	\item Gráfico que acompañe lo anterior
+	\item TA: estimación del azimut desconocido (más gráfica)
+	\item TA: mejora en modelos de transposición usando azimut estimado
+\end{itemize}
+
+
+\subsection{Controlled validation}
+\label{subsec:validation}
+
+\draftnote{Mostrar $\hat\gamma$ versus $\gamma_{\rm ref}$ como scatterplot. Mostrar tabla y reportar días claros seleccionados por orientación. Mencionar y mostrar criterios de rechazo por ruido en GTI e impacto en el ajuste.}
+
+Results from the validation are shown in Table \ref{tab:az-nominal}. 
+
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[width=0.6\textwidth]{figures/F02_estimated_vs_nominal_AZ.pdf}
+	\caption{Estimated azimuth versus independently determined reference azimuth
+		for the controlled experiment.}
+	\label{fig:validation}
 \end{figure}
 
-\subsection{Accuracy and repeatability against controlled orientations}
+%\subsection{Dataset audit and behavior of the GTI fits}
+%\label{subsec:fitresults}
+%\draftnote{Show representative good and difficult fit examples (especially 2026-07-01, 2026-08-31, 2026-09-17). Quantify why observations are removed and how the rejection moves $\hat\omega^{*}$. Distinguish noisy data from biased fitting choices.}
+%\begin{figure}[t]
+%\centering
+%\figplaceholder{Panel examples: well-behaved curve; 2026-07-01; 2026-08-31; 2026-09-17.}
+%\caption{Representative fits to daily GTI maxima, including cases for which
+%measurement noise or sample rejection complicates the determination of
+%$\omega^{*}$.}
+%\label{fig:fits}
+%\end{figure}
+
+\begin{table}[htbp]
+	\centering
+	\small
+	\caption{AZ results by nominal orientation. All angular quantities are in degrees. Signed bias is the mean of $\Delta\gamma=\hat{\gamma}-\gamma_{\mathrm{nom}}$. SD is the sample standard deviation ($N-1$ denominator); -- denotes $N=1$. Nominal orientations are not independent ground truth.}
+	\label{tab:az-nominal}
+	\begin{tabular}{rrrrrrr}
+		\toprule
+		$\gamma_{\mathrm{nom}}$ & $N$ & Mean $\hat{\gamma}$ & SD & Signed bias & MAE & RMSE \\
+		\midrule
+		0 & 1 & 0.60 & -- & 0.60 & 0.60 & 0.60 \\
+		10 & 3 & 11.20 & 3.10 & 1.20 & 2.00 & 2.80 \\
+		20 & 1 & 22.60 & -- & 2.60 & 2.60 & 2.60 \\
+		30 & 2 & 34.55 & 2.33 & 4.55 & 4.55 & 4.84 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\subsection{Dependence of uncertainty}
 \label{subsec:accuracy}
-\draftnote{Provide overall $\MBE_\gamma$, $\MAE_\gamma$, $\RMSE_\gamma$, orientation-level uncertainty, and independent reference uncertainty. Plot $\hat\gamma$ versus $\gamma_{\rm ref}$, not only nominal values. Avoid pseudo-replication across days.}
-\begin{figure}[t]
-\centering
-\figplaceholder{Estimated versus reference azimuth; 1:1 line; uncertainties; per-orientation markers.}
-\caption{Estimated azimuth versus independently determined reference azimuth
-for the controlled experiment.}
-\label{fig:validation}
-\end{figure}
+\draftnote{Provide  $u_\gamma=f(\gamma,\beta,\ldots)$   }
 
-\subsection{Fit quality, angular error, and uncertainty calibration}
-\label{subsec:uncertaintyresults}
+
+\subsection{Sensitivity and robustness}
+\label{subsec:sensitivityRobustness}
 \draftnote{Evaluate correlation/predictive value of RMSE, reject fraction, asymmetry, curvature, and $u_{\omega^{*}}$; compare predicted intervals with observed errors. Do not describe a proxy as calibrated uncertainty without coverage testing.}
 \begin{figure}[t]
 \centering
@@ -34,31 +70,63 @@ as a function of surface orientation and GTI-fit diagnostics.}
 \label{fig:uncertainty}
 \end{figure}
 
-\subsection{Benefits of multi-day aggregation}
-\label{subsec:multidayresults}
-\draftnote{Show convergence of error and between-sample variability as a function of the number of independent clear-sky days. Compare robust estimators and predefine resampling.}
-\begin{figure}[t]
-\centering
-\figplaceholder{Error/dispersion versus number of clear days and selected perturbation tests.}
-\caption{Convergence of multi-day azimuth estimation and sensitivity to data
-availability or fitting conditions.}
-\label{fig:robustness}
+
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[width=0.8\textwidth]{figures/F01_azimuth_over_time.pdf}
+	\caption{Estimated azimuth versus independently determined reference azimuth
+		for the controlled experiment.}
+	\label{fig:azimuth_time}
 \end{figure}
+
+
+%\subsection{Benefits of multi-day aggregation}
+%\label{subsec:multidayresults}
+%\draftnote{Show convergence of error and between-sample variability as a function of the number of independent clear-sky days. Compare robust estimators and predefine resampling.}
+%\begin{figure}[t]
+%\centering
+%\figplaceholder{Error/dispersion versus number of clear days and selected perturbation tests.}
+%\caption{Convergence of multi-day azimuth estimation and sensitivity to data
+%availability or fitting conditions.}
+%\label{fig:robustness}
+%\end{figure}
 
 \subsection{Sensitivity to measurement and modeling perturbations}
 \label{subsec:sensitivity}
 \draftnote{Perturb tilt, time stamps, cadence, GTI noise, missing data, fit interval and clear-sky inputs. Prioritize confounding between apparent azimuth error and timestamp/tilt errors. Separate simulation from field evidence. Supplemental plots as needed.}
 
+\begin{table}[htbp]
+	\centering
+	\small
+	\caption{Descriptive statistics of the TA azimuth estimates. The period spans the first and last retained GTI maximum dates, not continuous coverage. SD uses the $N-1$ denominator. These statistics are not calibrated uncertainties.}
+	\label{tab:ta-descriptive}
+	\begin{tabular}{lr}
+		\toprule
+		Statistic & Value \\
+		\midrule
+		$N$ & 29 \\
+		Measurement period & 2016-10-02 to 2017-05-07 \\
+		Mean $\hat{\gamma}$ ($^\circ$) & -13.93 \\
+		Median $\hat{\gamma}$ ($^\circ$) & -13.90 \\
+		Sample SD ($^\circ$) & 1.07 \\
+		Minimum ($^\circ$) & -16.20 \\
+		Maximum ($^\circ$) & -12.00 \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
 \subsection{Diagnosis of field-station orientation}
 \label{subsec:fieldresults}
 \draftnote{Show $\hat\gamma(t)$ and uncertainty by station, stable periods and potential changes, with any external supporting evidence. Avoid asserting true azimuth from GTI alone.}
-\begin{figure}[t]
-\centering
-\figplaceholder{Time series of field-station estimated azimuth and documented station events.}
-\caption{Application to historical field-station measurements: temporal
-behavior and possible orientation changes.}
-\label{fig:field}
-\end{figure}
+
+
+%\begin{figure}[t]
+%\centering
+%\figplaceholder{Time series of field-station estimated azimuth and documented station events.}
+%\caption{Application to historical field-station measurements: temporal
+%behavior and possible orientation changes.}
+%\label{fig:field}
+%\end{figure}
 
 \subsection{Consequences for transposition-model evaluation}
 \label{subsec:transpositionresults}
