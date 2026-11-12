@@ -32,8 +32,8 @@ def time_series(data):
                        label=r"Nominal $\gamma_{\mathrm{nom}}$")
             ax.legend(loc="upper left", bbox_to_anchor=(0.17, 1.02), ncol=2,
                       handletextpad=0.4, columnspacing=1.2)
-            ax.set_ylim(-4, 50)
-            ax.set_yticks([0, 10, 20, 30, 40, 50])
+            ax.set_ylim(-4, 70)
+            ax.set_yticks(np.arange(0, 71, 10))
         else:
             ax.set_ylim(-17.1, -10.6)
             ax.set_yticks([-16, -14, -12])
@@ -51,13 +51,19 @@ def time_series(data):
 
 def estimated_vs_nominal(az):
     fig, ax = plt.subplots(figsize=(3.5, 3.5), layout="constrained")
-    ax.plot([-5, 50], [-5, 50], color="0.45", linestyle="--", linewidth=0.9, zorder=1)
+    ax.plot([-5, 70], [-5, 70],
+        color="0.45", linestyle="--", linewidth=0.9, zorder=1)
     for nominal, group in az.groupby("azimuth_nominal", sort=True):
         color, marker = ORIENTATIONS[nominal]
         ax.scatter(group["azimuth_nominal"], group["azimuth"], s=33,
                    color=color, marker=marker, edgecolor="white", linewidth=0.4,
                    zorder=3, label=rf"{nominal:.0f}$^\circ$")
-    ax.set(xlim=(-5, 50), ylim=(-5, 50), xticks=[0, 10, 20, 30, 40, 50], yticks=[0, 10, 20, 30, 40, 50])
+    ax.set(
+        xlim=(-5, 70),
+        ylim=(-5, 70),
+        xticks=np.arange(0, 71, 10),
+        yticks=np.arange(0, 71, 10),
+    )
     ax.set_aspect("equal", adjustable="box")
     ax.set_xlabel(r"Nominal azimuth, $\gamma_{\mathrm{nom}}$ ($^\circ$)")
     ax.set_ylabel(r"Estimated azimuth, $\hat{\gamma}$ ($^\circ$)")
