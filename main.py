@@ -60,7 +60,7 @@ def main():
         raise FileNotFoundError(
             f"No existe {candidates_path}. "
             f"Corré primero analysis/generate_daily_screening.py "
-            f"con STATION={STATION!r}."
+            f"con --station {STATION}."
         )
 
     candidates = pd.read_csv(candidates_path)
@@ -144,7 +144,10 @@ def main():
             }
         )
 
-        save_daily_clearsky_plot(df, ghi_csk, msk_clearsky)
+        save_daily_clearsky_plot(
+            df, ghi_csk, msk_clearsky,
+            output_dir=REPO_ROOT / cfg["daily_plots_dir"],
+        )
 
         fit_result = cs.estimate_omega_star(
             df,
@@ -152,6 +155,8 @@ def main():
             longitude,
             discard=DISCARD,
             max_discard_passes=MAX_DISCARD_PASSES,
+            latitude=cfg["latitude"],
+            eot_method=cfg.get("eot_method", "spencer"),
         )
 
         omega_star = fit_result["omega_star"]
@@ -178,6 +183,7 @@ def main():
             date=date,
             azimuth=azimuth,
             azimuth_nominal=azimuth_nominal,
+            output_dir=REPO_ROOT / cfg["fit_plots_dir"],
         )
 
         print(
@@ -220,10 +226,8 @@ def main():
     output_dir = REPO_ROOT / cfg["results_dir"]
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    timestamp = pd.Timestamp.now().strftime("%Y%m%d_%H%M%S")
-
-    results_path = output_dir / f"azimuth_results_{timestamp}.csv"
-    diagnostics_path = output_dir / f"azimuth_diagnostics_{timestamp}.csv"
+    results_path = output_dir / "azimuth_results.csv"
+    diagnostics_path = output_dir / "azimuth_diagnostics.csv"
 
     df_results.to_csv(results_path, index=False)
     df_diagnostics.to_csv(diagnostics_path, index=False)

@@ -71,13 +71,13 @@ def plot_omega_fit(
 
 
     fig, ax = plt.subplots(figsize=(8,5))
-    ax.scatter(omega,gti,label='GTI usada en el ajuste')
+    ax.scatter(omega,gti,label="GTI used in fit")
     if discard and fit_result['n_discarded']:
         ax.scatter(
             fit_result['omega_discarded'], fit_result['gti_discarded'],
-            marker='x', color='tab:orange', label='GTI descartada por 2σ (acumulada)'
+            marker='x', color='tab:orange', label="GTI rejected by 2σ (cumulative)"
         )
-    ax.plot(omega_fit,gti_fit,label='Ajuste cuadrático de GTI')
+    ax.plot(omega_fit,gti_fit,label="Quadratic fit to GTI")
     ax.plot(omega_star,gti_star,'ro',label=r'$\omega^\ast$')
 
     title = (

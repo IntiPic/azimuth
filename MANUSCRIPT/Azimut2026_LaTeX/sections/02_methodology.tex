@@ -1,94 +1,161 @@
 \section{Methodology}\label{sec:methodology}
 
 \subsection{Solar geometry and azimuth convention}\label{subsec:geometry}
-Let $\omega$ denote the solar hour angle and $\beta$ the surface tilt. We
-define $\gamma=0$ for an equator-facing surface, with the sign convention
-made explicit for the hemisphere under study. The daily hour angle of maximum
-clear-sky GTI is denoted by $\omega^{*}$.
+
+The orientation of an arbitrary inclined surface is defined by its tilt, $\beta$, and its azimuth, $\gamma$, which is the angle formed by the normal to the plane and the local meridian; it is 0 if the surface is facing towards the North, and east negative by convention.
+
+For a sun-facing surface, under clear sky conditions, the daily GTI as a function of the hour angle $\omega$ shows a well defined maximum attained at $\omega^{*}$ [MOSRTRAR FIG], which follows the same sign convention as $\gamma$. There is no explicit equation that relates both angles, but the goal of this method is to simulate their dependence by means of a function  $\gamma=f(\omega^{*})$.
+
+\begin{itemize}
+	\item Sign convention: zero azimuth, $\gamma=0$, means surfaces facing due north. Negative (positive) azimuth means the surface is facing east (west).
+	\item Under clear sky conditions, the maximum of GTI is well defined and the daily hour angle at which is attained is denoted by $\omega^{*}$.
+	\item We construct a function $\gamma=f(\omega^{*})$ that relates the azimuth to the hour angle that maximizes GTI undere clear sky conditions.
+	\item The Ineichen model (REFERENCE) provides the three horizontal components GHI, DHI, DNI under clear sky conditions for the day.
+	\item The Perez-Driesse model (REFERENCE) is used to estimate GTI for a range of azimuths. For each GTI we compute the $\omega^{*}$ that maximises it.
+	\item This results in a lookup table with two dimensions: azimuths and days of the year, with the $\omega^{*}$ as values.
+	\item In parallel, clear sky days are selected from GHI data using the Reno-Hansen algorithm (REFERENCE).
+	\item GTI data for such clear days is fitted in order to get the $\omega^{*}$. This results in a time series of estimated $\omega^{*}$.
+	\item The estimated $\omega^{*}$ are fed to the LUT in order to interpolate (extrapolate?) the azimuth estimate  $\gamma_{calc}$ for the corresponding clear day. 
+\end{itemize}
+
+
+
 \draftnote{Add solar-angle equations, the exact implementation of solar time and timestamps, timezone convention, and the explicit signed azimuth definition (east/west) used by Azimut2026. Note how the convention maps to pvlib if applicable.}
 
 \begin{figure}[t]
-\centering
-\figplaceholder{Geometry: tilt $\beta$, azimuth $\gamma$, hour angle $\omega$, and the controlled mount.}
-\caption{Conceptual geometry and experimental configuration. Replace the
-placeholder with a diagram and/or a photograph of the measurement system.}
-\label{fig:geometry}
+	\centering
+	\figplaceholder{Geometry: tilt $\beta$, azimuth $\gamma$, hour angle $\omega$, and the controlled mount.}
+	\caption{Conceptual geometry and experimental configuration. Replace the
+	placeholder with a diagram and/or a photograph of the measurement system.}
+	\label{fig:geometry}
 \end{figure}
 
 \subsection{Mapping the hour angle of maximum GTI to surface azimuth}
 \label{subsec:mapping}
-For a selected day $d$, the modeled relationship between surface azimuth and
-the location of the GTI maximum is represented by
-\begin{equation}
-  \hat\gamma_d = \mathcal{F}_d\!\left(\hat\omega_d^{*};\beta,\phi,\boldsymbol{p}_d\right),
-  \label{eq:azimuth_mapping}
-\end{equation}
-where $\phi$ is the site latitude and $\boldsymbol{p}_d$ denotes the
-assumptions and inputs used to construct the clear-sky/transposition mapping.
-The 2021 formulation used a fitted mapping between $\omega^{*}$ and $\gamma$
-\citep{piccioli2021}.
+
+For a selected day $d$, the modeled relationship between surface azimuth $\gamma$ and
+the hour angle of the GTI maximum $\omega^{*}$ is obtained by first calculating the GHI, DNI and DHI components of radiation for clear sky conditions using the Ineichen model [REF INEICHEN]. Then the components are fed into the Perez-Driesse [REF!!] transposition model for a range of azimuths, and a family of simulated $\text{GTI}_{\gamma}$ is calculated, each of which attains its maximum at $\omega^{*}$.
+
+This procedure induces a one-to-one correspondence between the azimuth $\gamma$ and $\omega^{*}$ which can be inverted for the range of angles of interest $\SI{-90}{\degree} \leq \gamma \leq \SI{+90}{\degree}$. The function $\gamma = f(\omega^{\ast})$ is dependent of the site, and shows a weak dependence with the day of the year, as can be seen in Figure \ref{fig:seasonal_lut}. 
+
+In order to achieve a bijection between $\gamma$ and $\omega^{*}$ it is important to simulate high resolution time series of GHI and its components, of the order of one second. Otherwise the maximum of the simulated GTI can induce ambiguous values of $\gamma$ [REFINAR ESTO].
+
+By calculating the functions for each day of the year, a lookup table of two dimensions (day of year and $\omega^{*}$ ) is generated. Subsequently the hour angle $\omega^{*}$ obtained by the GTI ground data is interpolated into the table and the azimuth for the day is calculated.
+
+%\begin{equation}
+%  \hat\gamma_d = \mathcal{F}_d\!\left(\hat\omega_d^{*};\beta,\phi,\boldsymbol{p}_d\right),
+%  \label{eq:azimuth_mapping}
+%\end{equation}
+%where $\phi$ is the site latitude and $\boldsymbol{p}_d$ denotes the
+%assumptions and inputs used to construct the clear-sky/transposition mapping.
+%The 2021 formulation used a fitted mapping between $\omega^{*}$ and $\gamma$
+%\citep{piccioli2021}.
+
+
 \draftnote{Describe the mapping ACTUALLY implemented in the repository (analytical fit, LUT, interpolator, clear-sky inputs, transposition model). Do not assume that the 2021 tangent fit is still used. Specify the azimuth search domain and numerical resolution.}
 
 \subsection{Estimation of the daily GTI maximum}\label{subsec:dailyfit}
-For a suitable interval around the daily maximum, a quadratic approximation
-can be written as
+
+One minute frequency daily GTI data under clear sky conditions is used to obtain an approximate value of the actual $\omega^{*}$. Clear sky selection criteria will be explained in the next section. A suitable interval of two hours around the daily maximum is defined, from which a first quadratic fit for the clear-sky GTI data is obtained as
+
 \begin{equation}
   \GTI(\omega)\simeq a_2\omega^2+a_1\omega+a_0,
   \qquad
   \hat\omega^{*}=-\frac{a_1}{2a_2},\qquad a_2<0.
   \label{eq:quadratic}
 \end{equation}
-The location of the fitted maximum, rather than the largest individual
-measurement, is used to reduce sensitivity to high-frequency fluctuations.
+
+Inherent noise from the data is smoothed by iteratively removing points that difer from the fit by more than $2\sigma$, where $\sigma$ is the stantard deviation of the fit [REFINAR], and then fitting again. This process is stopped after three iterations, or if no points satisfy this condition. 
+
+Then the estimate for that day $ \hat\omega^{*}$ is calculated according to Equation \ref{eq:quadratic} from the iterative fitting. Figures \ref{fig:gti_fit1} and \ref{fig:gti_fit2} shows two examples of fitting for a nominal azimuth $\gamma_{nom} = \SI{+30}{\degree}$ corresponding to two clear sky days. It can be seen that the discarded percentage is related to the accuracy of the azimuth prediction.
+
 \draftnote{Specify fit-window definition, sample cadence, fitting algorithm, iteration/stopping rules, physical constraints, and treatment of non-concave or poorly constrained fits. Verify these against current code.}
 
 \subsection{Clear-sky selection, outliers, and diagnostic indicators}
 \label{subsec:quality}
-A daily estimate is only meaningful if the irradiance maximum is sampled
-adequately and the retained GTI observations are suitable for fitting.
-Candidate diagnostics include fit residual dispersion, fraction of rejected
-points, residual asymmetry, maximum curvature, and temporal data coverage.
+
+Starting with high resolution (1-minute or smaller intervals) GTI data, days with clear-sky
+conditions around the GTI maximum are selected. This step must be performed by visual inspection unless a set of reliable, simultaneous GHI data is available. If this is the case, an automatic detection algorithm is applied in order to automatically distinguish the clear points.
+
+We chose the Reno-Hansen algorithm [REF] to detect clear sky conditions, which requires one-minute GHI data and a clear sky modeled GHI, for which we use the Ineichen model [REF]. We favor this choice since it has large coverage and can be fully implemented inside the PVLIB environment in Python [REF!!].
+
+By finding the hour angle that maximizes the one-minute frequency GTI data, we obtain a proxy of the hour angle $\omega^{*}$ and select a two hour window centered around it. If more than 110 minutes out of the 120 minutes is labeled as clear sky by the algorithm, the day is considered suitable for further analysis and calculate its $\omega^{*}$.
+
 \draftnote{Define the actual clear-sky and outlier masks with precise thresholds. Test the exceptional dates 2026-07-01, 2026-08-31, and 2026-09-17; distinguish physical cloud variability from an algorithmic selection artifact. Do not tune screening criteria solely to minimize observed angular error.}
+
+
+\begin{figure}[b!]
+	\centering
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/F04_GTI_daily_fit_2026-09-10.png}
+		\caption{First subfigure caption}
+		\label{fig:gti_fit1}
+	\end{subfigure}
+	\hfill % Adds horizontal space between the two figures
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/F05_GTI_daily_fit_2026-09-17.png}
+		\caption{Second subfigure caption}
+		\label{fig:gti_fit2}
+	\end{subfigure}
+	\caption{Main caption describing both figures}
+	\label{fig:both}
+\end{figure}
 
 \subsection{Uncertainty propagation and confidence assessment}
 \label{subsec:uncertainty}
-Writing $\mathbf{a}=(a_2,a_1,a_0)$, the formal local uncertainty of
-$\hat\omega^{*}$ may be approximated by the delta method,
+
+From Equation \ref{eq:quadratic} the uncertainty propagation of the fitting can be determined from the coeficients $a$ and $b$ according to
+
+
 \begin{equation}
-  u^2_{\omega^{*}}\simeq
-  \left(\nabla_{\mathbf{a}}\omega^{*}\right)^{\mathsf{T}}
-  \boldsymbol{\Sigma}_{\mathbf{a}}
-  \nabla_{\mathbf{a}}\omega^{*},
-  \label{eq:omega_uncertainty}
+	u^2(\omega^*)=
+	\frac{b^2}{4a^4}u^2(a)
+	+\frac{1}{4a^2}u^2(b)
+	-\frac{b}{2a^3}\operatorname{Cov}(a,b)
+	\label{eq:uncertainty_1}
 \end{equation}
-with $\boldsymbol{\Sigma}_{\mathbf{a}}$ the covariance matrix of the
-fitted coefficients. A first-order propagated component is
+
+where $\operatorname{Cov}(a,b)$ is the covariance of the fitted coefficients [REF AL NIST].
+
+Since we have constructed a function $\gamma = f(\omega^{\ast})$, the uncertainty for $\omega^{\ast}$ $u_\omega$ can be propagated to the azimuth by 
+
 \begin{equation}
- u_{\gamma,\mathrm{fit}} \simeq
- \left|\frac{\partial\mathcal{F}_d}{\partial\omega^{*}}\right|
- u_{\omega^{*}}.
- \label{eq:gamma_uncertainty}
+	u_\gamma=
+		\left|\frac{d\gamma}{d\omega^*}\right|u_\omega
 \end{equation}
-This formal uncertainty does not, by itself, account for correlated residuals,
-incorrect atmospheric inputs, timestamp offsets, or errors in the reference
-orientation. Alternative uncertainty estimates and their calibration should
-therefore be evaluated.
+
+It is important to clear that this uncertainty is related to the fitting only. It doesn't account for noise or residual clouds that distort the data, and it could be small and yet the estimated $\omega^{\ast}$ be off. This can be assessed via bootstrap [EXPLORAR ESTO].
+
+
 \draftnote{Compare covariance propagation with a time-aware bootstrap (e.g., blocks) and with empirical between-day spread. Report uncertainty components separately.}
 
 \subsection{Multi-day estimation and temporal stability}
 \label{subsec:aggregation}
-For a period expected to have stable orientation, daily estimates
-$\hat\gamma_d$ can be combined using robust or uncertainty-weighted procedures.
+For a period expected to have stable orientation, daily estimates $\hat\gamma_d$ can be combined using robust or uncertainty-weighted procedures.
+
 A weighted mean may be considered as a baseline,
+
 \begin{equation}
   \hat\gamma_{\mathrm{period}}=
   \frac{\sum_d w_d\hat\gamma_d}{\sum_d w_d},
   \qquad w_d=u_{\gamma,d}^{-2},
   \label{eq:aggregation}
 \end{equation}
+
 provided that the daily uncertainties are calibrated and the effects of
 correlations and shared systematic errors are addressed.
+
+
 \draftnote{Compare median, robust location estimator, and weighted mean. Specify change-point detection procedure for historical stations, if used.}
+
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[width=0.9\textwidth]{figures/F_LUT_seasonal_AZ_1s.pdf}
+	\caption{Seasonal dependence of $\gamma = f(\omega^{\ast})$ function.}
+	\label{fig:seasonal_lut}
+\end{figure}
 
 \subsection{Validation protocol and evaluation metrics}
 \label{subsec:metrics}

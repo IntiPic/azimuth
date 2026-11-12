@@ -3,13 +3,13 @@
 set -e
 
 REMOTE="inti@164.73.222.4:/datos01/LES/VAULT/vault_LES/AZ/2026/DataT/"
-LOCAL="data/irradiance/"
+LOCAL="${AZ_DATA_DIR:-data/all/}"
 
 mkdir -p "$LOCAL"
 
 echo "Actualizando datos de irradiancia..."
 
-rsync -av --progress \
+rsync -av --progress --ignore-existing \
     --include='AZ_DT_2026052[1-9]T*.csv' \
     --include='AZ_DT_2026053[0-1]T*.csv' \
     --include='AZ_DT_20260[6-9]*.csv' \
