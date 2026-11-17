@@ -100,7 +100,7 @@ By finding the hour angle that maximizes the one-minute frequency GTI data, we o
 		\label{fig:gti_fit2}
 	\end{subfigure}
 	\caption{Main caption describing both figures}
-	\label{fig:both}
+	\label{fig:gti_fit}
 \end{figure}
 
 \subsection{Uncertainty propagation and confidence assessment}
@@ -133,7 +133,7 @@ It is important to clear that this uncertainty is related to the fitting only. I
 
 \subsection{Multi-day estimation and temporal stability}
 \label{subsec:aggregation}
-For a period expected to have stable orientation, daily estimates $\hat\gamma_d$ can be combined using robust or uncertainty-weighted procedures.
+For a period expected to have stable orientation, daily estimates $\hat\gamma_d$ can be combined by means of their average.
 
 A weighted mean may be considered as a baseline,
 
@@ -159,6 +159,9 @@ correlations and shared systematic errors are addressed.
 
 \subsection{Validation protocol and evaluation metrics}
 \label{subsec:metrics}
+
+For the controlled experiment, the azimuth estimates are compared with the nominal orientations indicated by the graduated mounting platform. The deviation for each selected day is defined as $\Delta\gamma_{\mathrm{nom}}=\hat{\gamma}-\gamma_{\mathrm{nom}}$. The corresponding bias, mean absolute error and root mean square error characterize the agreement between estimated and nominal azimuths. The uncertainty associated with the determination of the geographical North-South reference and with the angular positioning of the platform must also be considered when assessing the absolute accuracy of the method.
+
 The azimuth error for controlled orientation $j$ is
 $\Delta\gamma_j=\hat\gamma_j-\gamma_{\mathrm{ref},j}$.
 Performance is described by bias, mean absolute error, and root mean square
