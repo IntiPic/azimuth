@@ -1,0 +1,9 @@
+{
+  "source_manifest": "paper/outputs/current/manifest.json",
+  "source_manifest_sha256": "b5cfb048ce38fa74ee71620f44d87e70f132caad4b650714ef58d608935bcd91",
+  "source_csv": "outputs/AZ/results/spa_1s/azimuth_results.csv",
+  "source_csv_sha256": "6e897749586ac442b71da6100e17240f83723649d15c7d8e73c9079c88b2a997",
+  "fixture_sha256": "6e897749586ac442b71da6100e17240f83723649d15c7d8e73c9079c88b2a997",
+  "rows": 14,
+  "description": "Historical AZ rows recovered verbatim from the pre-SWC2021 publication manifest; old azimuth convention, omega_star unchanged. No synthetic measurements."
+}

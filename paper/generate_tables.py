@@ -21,6 +21,8 @@ import sys
 import numpy as np
 import pandas as pd
 
+from convert_ta_results import TA_SOURCE, TA_DERIVED, converted_bytes
+
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "paper" / "outputs"
 INPUTS = {
@@ -28,8 +30,9 @@ INPUTS = {
         "AZ_RESULTS_CSV",
         "outputs/AZ/results/spa_1s/azimuth_results.csv",
     ),
-    "TA": "outputs/TA/results/azimuth_results_20261103_204427.csv",
+    "TA": TA_DERIVED,
 }
+AZ_COUNTS = {0.0: 1, -10.0: 3, -20.0: 1, -30.0: 5, -40.0: 3, -50.0: 1}
 COMMON = ["station", "date", "doy", "tilt", "omega_star", "azimuth",
           "discarded_pct", "discard_passes", "discard_stop_reason"]
 AZ_EXTRA = ["azimuth_nominal", "azimuth_error_deg", "azimuth_abs_error_deg"]
@@ -102,11 +105,25 @@ def load_results():
         if len(header) != len(set(header)):
             raise ValueError(f"{station}: duplicate column names")
         data[station] = validate_frame(pd.read_csv(io.BytesIO(raw)), station)
+        if len(data[station]) != (14 if station == "AZ" else 29):
+            raise ValueError(f"{station}: unexpected publication case count")
+        if station == "AZ" and data[station]["azimuth_nominal"].value_counts().to_dict() != AZ_COUNTS:
+            raise ValueError("AZ: unexpected SWC2021 nominal orientations or case counts")
         provenance[station] = {
             "path": relative, "absolute_path": str(path), "sha256": sha256(raw),
             "rows": len(records), "columns": header,
             "original_rows": [{"csv_row": i, **row} for i, row in enumerate(records, 2)],
         }
+        if station == "TA":
+            source = (ROOT / TA_SOURCE).read_bytes()
+            if raw != converted_bytes(source):
+                raise ValueError("TA: derivative must change only azimuth to -azimuth")
+            provenance[station]["derivation"] = {
+                "source_path": TA_SOURCE, "source_sha256": sha256(source),
+                "conversion": "azimuth_swc2021 = -azimuth_historical",
+                "unchanged": "omega_star and every other field; row order and numeric text",
+                "physical_orientation": "not established by this sign conversion",
+            }
     return data, provenance
 
 
@@ -211,19 +228,23 @@ def write_manifest(run_dir, provenance, products, summaries, details=None):
     import matplotlib
     paper = ROOT / "paper"
     code = sorted(paper.glob("*.py")) + [paper / "README.md"]
-    tests = ROOT / "tests" / "test_paper_results.py"
-    if tests.exists():
-        code.append(tests)
+    code += sorted((paper / "metadata").glob("*.json"))
+    code += sorted((ROOT / "tests").glob("test_paper*.py"))
+    code += sorted((ROOT / "tests" / "fixtures").glob("AZ_legacy*"))
+    import xarray
+    import netCDF4
     manifest = {
         "created_utc": datetime.now(timezone.utc).isoformat(),
         "command": shlex.join([sys.executable, *sys.argv]),
         "working_directory": str(Path.cwd()),
         "git_commit": git("rev-parse", "HEAD"),
+        "git_branch": git("branch", "--show-current"),
         "git_status": git("status", "--short", "--untracked-files=all"),
         "tracked_diff_sha256": sha256((git("diff", "HEAD", "--binary") or "").encode()),
         "code_sha256": {str(p.relative_to(ROOT)): sha256(p.read_bytes()) for p in code},
         "versions": {"python": sys.version, "numpy": np.__version__, "pandas": pd.__version__,
-                     "matplotlib": matplotlib.__version__, "platform": platform.platform()},
+                     "matplotlib": matplotlib.__version__, "xarray": xarray.__version__,
+                     "netCDF4": netCDF4.__version__, "platform": platform.platform()},
         "inputs": provenance,
         "definitions": {
             "delta_gamma": "estimated minus nominal; direct difference in degrees; no wrapping needed for these rows",
@@ -233,7 +254,8 @@ def write_manifest(run_dir, provenance, products, summaries, details=None):
             "period": "first to last retained date, not continuous measurement coverage",
             "nominal": "AZ CSV nominal values only; not independent ground truth; TA has no nominal",
             "source_error": "input azimuth_error_deg has the opposite sign and is checked but not used to calculate metrics",
-            "angular_convention": "unchanged from input CSVs; no origin or sign conversion",
+            "angular_convention": "SWC2021: north=0; east negative; west positive. AZ already converted in input; TA uses an explicit historical CSV derivative. omega_star unchanged.",
+            "TA_orientation": "No physical east/west orientation inferred without external evidence",
         },
         "summaries": {"T01": json.loads(summaries[0].to_json(orient="records", double_precision=15)),
                       "T02": json.loads(summaries[1].to_json(orient="records", double_precision=15))},
@@ -251,8 +273,8 @@ def arguments(description):
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument(
         "--run-id",
-        default="current",
-        help="Output directory identifier",
+        default="publication_swc2021_" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S_%fZ"),
+        help="New output directory identifier (default: unique UTC timestamp)",
     )
     return parser.parse_args()
 

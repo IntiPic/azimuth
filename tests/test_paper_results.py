@@ -26,7 +26,7 @@ class PaperResultsTests(unittest.TestCase):
         cls.summaries = summarize(cls.data)
 
     def test_counts_dates_and_traceability(self):
-        self.assertGreater(len(self.data["AZ"]), 0)
+        self.assertEqual(len(self.data["AZ"]), 14)
         self.assertEqual(len(self.data["TA"]), 29)
         self.assertEqual(
             len(self.data["AZ"]),
@@ -120,17 +120,24 @@ class PaperResultsTests(unittest.TestCase):
                 self.assertEqual(len(ax.lines), 0)  # No false time continuity.
                 np.testing.assert_allclose(ax.collections[0].get_offsets()[:, 0], mdates.date2num(self.data[station]["date"]))
                 np.testing.assert_allclose(ax.collections[0].get_offsets()[:, 1], self.data[station]["azimuth"])
+                lo, hi = ax.get_ylim()
+                self.assertTrue(self.data[station]["azimuth"].between(lo, hi).all())
             np.testing.assert_allclose(f1.axes[0].collections[1].get_offsets()[:, 1], self.data["AZ"]["azimuth_nominal"])
             self.assertEqual(len(f1.axes[1].collections), 1)
             f2 = estimated_vs_nominal(self.data["AZ"])
             plotted = np.concatenate([artist.get_offsets() for artist in f2.axes[0].collections])
-            np.testing.assert_allclose(plotted, self.data["AZ"][["azimuth_nominal", "azimuth"]])
+            grouped = self.data["AZ"].sort_values("azimuth_nominal", kind="stable")
+            np.testing.assert_allclose(plotted, grouped[["azimuth_nominal", "azimuth"]])
             self.assertEqual(f2.axes[0].get_xlim(), f2.axes[0].get_ylim())
             self.assertEqual(f2.axes[0].get_aspect(), 1.0)
+            lo, hi = f2.axes[0].get_xlim()
+            self.assertTrue(((plotted >= lo) & (plotted <= hi)).all())
             f3 = differences(self.data["AZ"], self.summaries[0])
             scatters = [a for a in f3.axes[0].collections if hasattr(a, "get_sizes")]
-            np.testing.assert_allclose(np.concatenate([a.get_offsets()[:, 1] for a in scatters]), self.data["AZ"]["delta_gamma"])
-            # Two real summaries; the third container is only the empty legend handle.
+            np.testing.assert_allclose(np.concatenate([a.get_offsets()[:, 1] for a in scatters]), grouped["delta_gamma"])
+            lo, hi = f3.axes[0].get_ylim()
+            self.assertTrue(grouped["delta_gamma"].between(lo, hi).all())
+            # Real summaries precede the empty legend handle.
             groups = self.summaries[0].loc[self.summaries[0]["N"].ge(2)]
             errorbars = f3.axes[0].containers[:len(groups)]
             self.assertEqual(len(errorbars), len(groups))
@@ -139,6 +146,7 @@ class PaperResultsTests(unittest.TestCase):
                 segment = bar.lines[2][0].get_segments()[0]
                 np.testing.assert_allclose(segment[:, 1], [row.signed_bias_deg-row.std_azimuth_deg,
                                                            row.signed_bias_deg+row.std_azimuth_deg])
+                self.assertTrue(((segment[:, 1] >= lo) & (segment[:, 1] <= hi)).all())
             for fig in [f1, f2, f3]:
                 plt.close(fig)
 
