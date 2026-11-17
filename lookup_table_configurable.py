@@ -49,7 +49,7 @@ lon = cfg["longitude"]
 surface_tilt = cfg["tilt"]
 tz_est = pytz.timezone(cfg["tz"])
 
-lookup_path = REPO_ROOT / "lookup" / STATION / "lookup_omega_gamma_1s.nc"
+lookup_path = REPO_ROOT / "lookup" / STATION / "lookup_omega_gamma_1s_swc2021_generated.nc"
 if lookup_path.exists():
     raise FileExistsError(
         f"La LUT canónica ya existe: {lookup_path}. "
@@ -140,7 +140,7 @@ for idx_dia, dia in enumerate(dias_del_anio):
 
     poa_components = pv.irradiance.get_total_irradiance(
         surface_tilt=surface_tilt,
-        surface_azimuth=az_matrix,
+        surface_azimuth=(360.0 - az_matrix) % 360.0,
         solar_zenith=sz_matrix,
         solar_azimuth=sa_matrix,
         dni=dni[:, np.newaxis],
@@ -193,7 +193,7 @@ for idx_dia, dia in enumerate(dias_del_anio):
     # GTI refinada para todos los azimuts
     poa_fine = pv.irradiance.get_total_irradiance(
         surface_tilt=surface_tilt,
-        surface_azimuth=azimuths[None, :],
+        surface_azimuth=(360.0 - azimuths[None, :]) % 360.0,
         solar_zenith=zen,
         solar_azimuth=saz,
         dni=dni_fine,

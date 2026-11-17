@@ -14,9 +14,8 @@ import numpy as np
 
 from generate_tables import (
     arguments, load_results, prepare_run, summarize, write_manifest, write_tables,
-    ROOT, sha256,
 )
-from generate_lut_figure import main as generate_lut_figure, DEFAULT_CSV
+from generate_lut_figure import load_lut, plot_lut
 from paper_style import BLUE, ORANGE, ORIENTATIONS, paper_context
 
 
@@ -32,13 +31,15 @@ def time_series(data):
                        label=r"Nominal $\gamma_{\mathrm{nom}}$")
             ax.legend(loc="upper left", bbox_to_anchor=(0.17, 1.02), ncol=2,
                       handletextpad=0.4, columnspacing=1.2)
-            ax.set_ylim(-4, 70)
-            ax.set_yticks(np.arange(0, 71, 10))
+            ax.set_ylim(-70, 4)
+            ax.set_yticks(np.arange(-60, 1, 10))
         else:
-            ax.set_ylim(-17.1, -10.6)
-            ax.set_yticks([-16, -14, -12])
-        ax.text(0.01, 0.96, f"({panel}) {station}   $N={len(frame)}$", transform=ax.transAxes,
-                ha="left", va="top", fontsize=9)
+            ax.set_ylim(10.6, 17.1)
+            ax.set_yticks([12, 14, 16])
+        # With negative AZ angles, the first observations occupy the top-left.
+        ax.text(0.01, 0.04 if station == "AZ" else 0.96,
+                f"({panel}) {station}   $N={len(frame)}$", transform=ax.transAxes,
+                ha="left", va="bottom" if station == "AZ" else "top", fontsize=9)
         ax.set_ylabel(r"Azimuth, $\gamma$ ($^\circ$)")
         ax.set_xlabel("Date of GTI maximum (America/Montevideo)")
         ax.xaxis.set_major_locator(mdates.AutoDateLocator(minticks=4, maxticks=6))
@@ -51,7 +52,7 @@ def time_series(data):
 
 def estimated_vs_nominal(az):
     fig, ax = plt.subplots(figsize=(3.5, 3.5), layout="constrained")
-    ax.plot([-5, 70], [-5, 70],
+    ax.plot([-70, 5], [-70, 5],
         color="0.45", linestyle="--", linewidth=0.9, zorder=1)
     for nominal, group in az.groupby("azimuth_nominal", sort=True):
         color, marker = ORIENTATIONS[nominal]
@@ -59,10 +60,10 @@ def estimated_vs_nominal(az):
                    color=color, marker=marker, edgecolor="white", linewidth=0.4,
                    zorder=3, label=rf"{nominal:.0f}$^\circ$")
     ax.set(
-        xlim=(-5, 70),
-        ylim=(-5, 70),
-        xticks=np.arange(0, 71, 10),
-        yticks=np.arange(0, 71, 10),
+        xlim=(-70, 5),
+        ylim=(-70, 5),
+        xticks=np.arange(-60, 1, 10),
+        yticks=np.arange(-60, 1, 10),
     )
     ax.set_aspect("equal", adjustable="box")
     ax.set_xlabel(r"Nominal azimuth, $\gamma_{\mathrm{nom}}$ ($^\circ$)")
@@ -92,8 +93,8 @@ def differences(az, summary):
         ticks.append(position)
         labels.append(rf"{nominal:.0f}$^\circ$" + f"\n$N={row.N}$")
     ax.set_xticks(ticks, labels)
-    ax.set(xlim=(-0.5, len(ticks) - 0.45), ylim=(-3.2, 8.5))
-    ax.set_yticks([-2, 0, 2, 4, 6, 8])
+    ax.set(xlim=(-0.5, len(ticks) - 0.45), ylim=(-8.5, 3.2))
+    ax.set_yticks([-8, -6, -4, -2, 0, 2])
     ax.set_xlabel(r"Nominal azimuth, $\gamma_{\mathrm{nom}}$")
     ax.set_ylabel(r"$\Delta\gamma=\hat{\gamma}-\gamma_{\mathrm{nom}}$ ($^\circ$)")
     handle = ax.errorbar([], [], yerr=[], fmt="_", color="0.15", markersize=9,
@@ -118,6 +119,8 @@ def main():
     args = arguments(__doc__)
     data, provenance = load_results()
     summaries = summarize(data)
+    lut, lut_provenance = load_lut()
+    provenance["LUT_AZ"] = lut_provenance
     run_dir, table_dir, figure_dir = prepare_run(args.run_id, with_figures=True)
     products = write_tables(table_dir, summaries)
     with paper_context():
@@ -125,9 +128,7 @@ def main():
         products += save_figure(estimated_vs_nominal(data["AZ"]), figure_dir, "F02_estimated_vs_nominal_AZ")
         products += save_figure(differences(data["AZ"], summaries[0]), figure_dir, "F03_differences_by_nominal_AZ")
 
-        products += generate_lut_figure([
-            "--output-dir", str(figure_dir)
-        ])
+        products += save_figure(plot_lut(lut), figure_dir, "F_LUT_seasonal_AZ_1s")
     details = {
         "F01": f"all {len(data['AZ'])} AZ and {len(data['TA'])} TA rows; marker-only; nominal markers only on AZ observed dates; different panel y ranges",
         "F02": f"{len(data['AZ'])} AZ estimates from SPA EOT and 1-second LUT; identity line; equal axis limits",
@@ -136,8 +137,9 @@ def main():
         "PNG_dpi": 300,
         "PDF": "vector paths and embedded TrueType fonts; no rasterized artists",
         "LUT": "Seasonal azimuth-hour-angle relation from the AZ 1-second LUT",
-        "LUT_csv": str(DEFAULT_CSV.relative_to(ROOT)),
-        "LUT_csv_sha256": sha256(DEFAULT_CSV.read_bytes()),
+        "LUT_netcdf": lut_provenance["path"],
+        "LUT_netcdf_sha256": lut_provenance["sha256"],
+        "LUT_monotonicity": "omega_star strictly increases with gamma for all 365 days",
     }
     manifest = write_manifest(run_dir, provenance, products, summaries, details)
     print(f"Validated AZ={len(data['AZ'])}, TA={len(data['TA'])}.\nFigures: {figure_dir}\nTables: {table_dir}\nManifest: {manifest}")

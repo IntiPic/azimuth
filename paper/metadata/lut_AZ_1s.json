@@ -1,29 +1,38 @@
 {
-  "station": "AZ",
-  "path": "lookup/AZ/lookup_omega_gamma_1s.nc",
-  "sha256": "3b2c2f84d4cc342f190a988a8328d153f954f5a3835aef3260f0dc319c489fcf",
-  "size_bytes": 5285705,
+  "path": "lookup/AZ/lookup_omega_gamma_1s_swc2021.nc",
+  "absolute_path": "/Users/inti/Desktop/SolarResearch/azimuth/lookup/AZ/lookup_omega_gamma_1s_swc2021.nc",
+  "sha256": "710bf60949d8d28654cf3167b3b30c717524d233037c1f211fc457554a49e1d8",
+  "size_bytes": 5286211,
+  "format": "NetCDF",
+  "engine": "netcdf4",
+  "variable": "omega_star",
+  "dimensions": [
+    "azimuth",
+    "doy"
+  ],
   "shape": [
     1801,
     365
   ],
-  "azimuth_step_deg": 0.1,
-  "temporal_resolution_s": 1,
-  "reference_year": 2026,
-  "generator": "lookup_table_configurable.py",
   "attrs": {
     "station": "AZ",
-    "surface_tilt": "35.0",
-    "albedo": "0.25",
+    "surface_tilt": 35.0,
+    "albedo": 0.25,
     "model": "Perez-Driesse",
-    "latitude": "-34.918034",
-    "longitude": "-56.166802",
+    "latitude": -34.918034,
+    "longitude": -56.166802,
     "timezone": "America/Montevideo",
-    "reference_year": "2026",
-    "azimuth_min": "-90.0",
-    "azimuth_max": "90.0",
-    "azimuth_step": "0.1",
-    "temporal_resolution_seconds": "1",
-    "maximum_method": "1min coarse search + 1s local argmax"
-  }
+    "reference_year": 2026,
+    "azimuth_min": -90.0,
+    "azimuth_max": 90.0,
+    "azimuth_step": 0.1,
+    "temporal_resolution_seconds": 1,
+    "maximum_method": "1min coarse search + 1s local argmax",
+    "azimuth_convention": "SWC2021: north=0; east negative; west positive",
+    "converted_from": "lookup_omega_gamma_1s.nc",
+    "source_sha256": "3b2c2f84d4cc342f190a988a8328d153f954f5a3835aef3260f0dc319c489fcf",
+    "conversion": "gamma_new = -gamma_old"
+  },
+  "minimum_omega_increment_deg": 0.012495697535278794,
+  "transformation": "none; native azimuth coordinates and omega_star values"
 }

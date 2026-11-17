@@ -13,22 +13,9 @@ Transposition models, that is, determination of GTI from the horizontal global i
 \citep{menyhart2015,urraca2017}.
 \draftnote{Add a quantitative motivation: how an azimuth error affects modeled GTI under representative conditions. Cite a dedicated study if used.}
 
-
 Orientation inference has been investigated using measured irradiance and modeled clear-sky responses \citep{barbier2019,piccioli2021}, and using photovoltaic generation measurements \citep{meng2020}. Our earlier conference paper introduced a novel approach that allows for azimuth estimation for fixed tilt surfaces using only GTI data, and also is capable of detecting changes in azimuth \citep{piccioli2021}. A subsequent work \citep{piccioli2022thesis} applied orientation diagnosis in the context of transposition-model evaluation. The method was validated using GTI ground data with various nominal fixed orientations (both tilt and azimuth), but not enough to fully assess the uncertainty associated to the method.
 
-This work aims to expand this validation to a more refined set of orientations, with a fully controlled set of data. 
+
+In this work, the method proposed in \citep{piccioli2021} is further developed and evaluated using GTI measurements from a controlled experiment with a more finely spaced set of nominal surface azimuths. The original procedure is simplified by replacing the daily parametrization of the function relating surface azimuth to the hour angle of maximum GTI, $\omega^{\ast}$, with a lookup table (LUT), calculated once for a given site, surface tilt and reference year. The automatic selection of suitable clear-sky days is also refined by introducing more explicit criteria for identifying intervals around the GTI maximum. Particular attention is given to the uncertainty associated with the method, especially in the determination of $\omega^{\ast}$ from measured GTI data and its sensitivity to measurement noise and fitting conditions. The method is then applied to field measurements from a station with a previously identified azimuth misalignment of uncertain magnitude, to evaluate the impact of the estimated orientation on the performance of irradiance transposition models. These results are used to assess the applicability and limitations of the method as a quality-control tool for GTI measurements at solar radiation monitoring stations and in photovoltaic applications.
 
 \draftnote{Complete state-of-the-art search, including studies after 2021. Distinguish irradiance-sensor orientation from PV-system orientation; avoid claiming novelty for the original PA method.}
-
-The remaining challenge is not only to estimate an azimuth, but to determine
-when that estimate is trustworthy. Specifically, the relationship between
-measurement quality, stability of the fitted GTI maximum, uncertainty in
-estimated azimuth, and practical usefulness for unattended stations requires
-systematic assessment.
-
-The objectives of this study are to (i) validate the peak-hour-angle approach
-against documented surface orientations; (ii) quantify uncertainty and the
-reliability of daily GTI fits; (iii) investigate robustness and multi-day
-aggregation; and (iv) illustrate its potential for diagnosing orientation
-inconsistencies and assessing their impact on transposition-model validation.
-\draftnote{Tighten the contribution statement after analysis. Specify what is genuinely new compared with SWC2021 and the thesis.}

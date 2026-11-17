@@ -20,8 +20,7 @@ Results from the validation are shown in Table \ref{tab:az-nominal}.
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[width=0.6\textwidth]{figures/F02_estimated_vs_nominal_AZ.pdf}
-	\caption{Estimated azimuth versus independently determined reference azimuth
-		for the controlled experiment.}
+	\caption{Estimated versus nominal surface azimuth for the AZ controlled-orientation experiment.}
 	\label{fig:validation}
 \end{figure}
 
@@ -37,7 +36,7 @@ Results from the validation are shown in Table \ref{tab:az-nominal}.
 %\label{fig:fits}
 %\end{figure}
 
-\begin{table}[htbp]
+\begin{table}[b!]
 	\centering
 	\small
 	\caption{AZ results by nominal orientation. All angular quantities are in degrees. Signed bias is the mean of $\Delta\gamma=\hat{\gamma}-\gamma_{\mathrm{nom}}$. SD is the sample standard deviation ($N-1$ denominator); -- denotes $N=1$. Nominal orientations are not independent ground truth.}
@@ -46,13 +45,18 @@ Results from the validation are shown in Table \ref{tab:az-nominal}.
 		\toprule
 		$\gamma_{\mathrm{nom}}$ & $N$ & Mean $\hat{\gamma}$ & SD & Signed bias & MAE & RMSE \\
 		\midrule
-		0 & 1 & 0.60 & -- & 0.60 & 0.60 & 0.60 \\
-		10 & 3 & 11.20 & 3.10 & 1.20 & 2.00 & 2.80 \\
-		20 & 1 & 22.60 & -- & 2.60 & 2.60 & 2.60 \\
-		30 & 2 & 34.55 & 2.33 & 4.55 & 4.55 & 4.84 \\
+		-50 & 1 & -52.20 & -- & -2.20 & 2.20 & 2.20 \\
+		-40 & 3 & -41.40 & 2.95 & -1.40 & 2.07 & 2.79 \\
+		-30 & 5 & -33.34 & 3.23 & -3.34 & 3.98 & 4.42 \\
+		-20 & 1 & -22.60 & -- & -2.60 & 2.60 & 2.60 \\
+		-10 & 3 & -11.20 & 3.10 & -1.20 & 2.00 & 2.80 \\
+		0 & 1 & -0.60 & -- & -0.60 & 0.60 & 0.60 \\
 		\bottomrule
 	\end{tabular}
 \end{table}
+
+
+
 
 \subsection{Dependence of uncertainty}
 \label{subsec:accuracy}
@@ -74,8 +78,7 @@ as a function of surface orientation and GTI-fit diagnostics.}
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[width=0.8\textwidth]{figures/F01_azimuth_over_time.pdf}
-	\caption{Estimated azimuth versus independently determined reference azimuth
-		for the controlled experiment.}
+	\caption{Daily surface azimuth estimates for the AZ controlled experiment and the TA field station. Nominal orientations are indicated for AZ.}
 	\label{fig:azimuth_time}
 \end{figure}
 
@@ -106,11 +109,11 @@ as a function of surface orientation and GTI-fit diagnostics.}
 		\midrule
 		$N$ & 29 \\
 		Measurement period & 2016-10-02 to 2017-05-07 \\
-		Mean $\hat{\gamma}$ ($^\circ$) & -13.93 \\
-		Median $\hat{\gamma}$ ($^\circ$) & -13.90 \\
+		Mean $\hat{\gamma}$ ($^\circ$) & 13.93 \\
+		Median $\hat{\gamma}$ ($^\circ$) & 13.90 \\
 		Sample SD ($^\circ$) & 1.07 \\
-		Minimum ($^\circ$) & -16.20 \\
-		Maximum ($^\circ$) & -12.00 \\
+		Minimum ($^\circ$) & 12.00 \\
+		Maximum ($^\circ$) & 16.20 \\
 		\bottomrule
 	\end{tabular}
 \end{table}
