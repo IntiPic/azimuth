@@ -76,7 +76,9 @@ class AzimuthEstimator:
 
         self.ds = ds
 
-    def estimate(self, omega_star, doy):
+    def estimate(self, omega_star, doy, *, tie_break="first"):
+        if tie_break not in ("first", "last"):
+            raise ValueError("tie_break debe ser 'first' o 'last'.")
         if not np.isfinite(omega_star):
             raise ValueError(f"omega_star no finito: {omega_star}")
 
@@ -94,6 +96,10 @@ class AzimuthEstimator:
             )
 
         # Se conserva la regla histórica: primer índice del mínimo.
-        idx = np.argmin(np.abs(values - omega_star))
+        distances = np.abs(values - omega_star)
+        # A sign conversion followed by sorting reverses plateau order. 'last'
+        # preserves the original first-minimum rule for that converted table.
+        idx = (np.argmin(distances) if tie_break == "first"
+               else len(distances) - 1 - np.argmin(distances[::-1]))
 
         return curve.azimuth[idx].item()
